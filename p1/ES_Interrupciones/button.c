@@ -17,10 +17,16 @@ void Eint4567_init(void)
 {
 /* Configuracion del controlador de interrupciones */
 	// Borra EXTINTPND escribiendo 1s en el propio registro
+    rEXTINTPND = ~0x0;
 	// Borra INTPND escribiendo 1s en I_ISPC
+    rINTPND = ~0x0;
 	// Configura las lineas como de tipo IRQ mediante INTMOD
+    rINTMOD = 0x0;
 	// Habilita int. vectorizadas y la linea IRQ (FIQ no) mediante INTCON
+    rINTCON = 0x1;
 	// Enmascara todas las lineas excepto Eint4567 y el bit global (INTMSK)
+    rINTMSK |= ~(1<<27) // Enmascarar todas las lineas, menos el bit 27 que esta reservado.
+    rINTMSK &= ~((1<<21) & (1<<26)); // Habiltar las lineas 21(Eint4567) y 26(bit global)
 	// Establecer la rutina de servicio para Eint4567
 /* Configuracion del puerto G */
 	// Establece la funcion de los pines (EINT7-EINT0)
