@@ -24,7 +24,7 @@ void Main(void)
 	while (1){
 		if ((rPDATG & (1<<6)) == 0 || (rPDATG & (1<<7)) == 0 ){
 			leds_switch();
-			//DelayMs(100);
+			DelayMs(100);
 			while((rPDATG & (1<<6)) == 0 || (rPDATG & (1<<7)) == 0){}
 		}
 	}
