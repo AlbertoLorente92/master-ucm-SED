@@ -15,8 +15,7 @@ extern void Eint4567_init(void);
 void Main(void)
 {
 	/* Inicializar controladores */
-	 rPCONG &= ~(1<<6 & 1<<7);
-	 rPUPG = 0;
+
 	//sys_init(); // Inicializacion de la placa, interrupciones y puertos
 	/* Establecer valor inicial de los LEDs */
 	leds_off();
