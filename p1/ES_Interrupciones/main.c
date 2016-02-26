@@ -21,11 +21,5 @@ void Main(void)
 	leds_off();
 	led1_on();
 	Eint4567_init();
-	while (1){
-		/*if ((rPDATG & (1<<6)) == 0 || (rPDATG & (1<<7)) == 0 ){
-			leds_switch();
-			//DelayMs(100);
-			while((rPDATG & (1<<6)) == 0 || (rPDATG & (1<<7)) == 0){}
-		}*/
-	}
+	while (1){}
 }
