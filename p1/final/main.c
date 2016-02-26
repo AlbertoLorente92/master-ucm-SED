@@ -7,6 +7,7 @@ extern void leds_off();
 extern void led1_on();
 extern void leds_switch();
 extern void Eint4567_init(void);
+extern void D8Led_init(void);
 //extern void sys_init();
 /*--- declaracion de funciones ---*/
 //void Main(void);
@@ -14,18 +15,8 @@ extern void Eint4567_init(void);
 
 void Main(void)
 {
-	/* Inicializar controladores */
-
-	//sys_init(); // Inicializacion de la placa, interrupciones y puertos
-	/* Establecer valor inicial de los LEDs */
 	leds_off();
-	led1_on();
 	Eint4567_init();
-	while (1){
-		/*if ((rPDATG & (1<<6)) == 0 || (rPDATG & (1<<7)) == 0 ){
-			leds_switch();
-			//DelayMs(100);
-			while((rPDATG & (1<<6)) == 0 || (rPDATG & (1<<7)) == 0){}
-		}*/
-	}
+	D8Led_init();
+	while (1){}
 }
