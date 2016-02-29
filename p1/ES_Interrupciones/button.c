@@ -48,6 +48,17 @@ DESCOMENTAR PARA LA PRIMERA PARTE CON INTERRUPCIONES
 */
 void Eint4567_ISR(void)
 {
+	/*Evitamos los rebotes de los pulsadores con la e/s programada comprobando tras
+	 * 10ms si la señal esta activada*/
+	DelayMs(10);
+	if (!((rPDATG & (1<<6)) == 0 || (rPDATG & (1<<7)) == 0 )){
+		//borrar flag de la int.
+		rEXTINTPND = 1<<2 | 1<<3;
+		rI_ISPC = 1<<21;
+		return;
+	}
+
+	/**/
 	//Conmutamos LEDs
 	leds_switch();
 	//Delay para eliminar rebotes
