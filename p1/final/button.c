@@ -10,6 +10,8 @@ int symbol = 0;
 void Eint4567_ISR(void) __attribute__ ((interrupt ("IRQ")));
 void Eint4567_init(void);
 extern void leds_switch ();
+extern void led1_on();
+extern void led2_on();
 extern void D8Led_symbol(int value);
 
 /*--- codigo de funciones ---*/
@@ -41,11 +43,11 @@ void Eint4567_init(void)
 /* Por precaucion, se vuelven a borrar los bits de INTPND y EXTINTPND */
 	rEXTINTPND = ~0x0;
 	rI_ISPC = ~0x0;
+	symbol = 0;
 }
 
 /*COMENTAR PARA LA PARTE DEL 8-SEGMENTOS
 DESCOMENTAR PARA LA PRIMERA PARTE CON INTERRUPCIONES
-*/
 void Eint4567_ISR(void)
 {
 	//Conmutamos LEDs
@@ -53,29 +55,46 @@ void Eint4567_ISR(void)
 	//Delay para eliminar rebotes
 	DelayMs(100);
 	
-	/*Atendemos interrupciones*/
+	//Atendemos interrupciones
 	//Borramos EXTINTPND ambas líneas EINT7 y EINT6
 	rEXTINTPND = 1<<2 | 1<<3;
 	//Borramos INTPND usando ISPC
 	rI_ISPC = 1<<21;
 }
+*/
 
 /*
 DESCOMENTAR PARA LA PARTE DEL 8-SEGMENTOS
 COMENTAR PARA LA PRIMERA PARTE CON INTERRUPCIONES
+*/
 int which_int;
 void Eint4567_ISR(void)
 {
 	/*Identificar la interrupcion*/
-	//which_int = rEXTINTPND;
+	which_int = rEXTINTPND & (1<<2 | 1<<3);
 	/* Actualizar simbolo*/
-	//switch (which_int) {
-	//
-	//}
+	switch (which_int) {
+		case 1<<2:
+			leds_off();
+			led1_on();
+			symbol += 1;
+			break;
+		case 1<<3:
+			leds_off();
+			led2_on();
+			symbol -= 1;
+			break;
+		default:
+			break;
+	}
 	// muestra el simbolo en el display
+	symbol &= ((unsigned int)(~0x0))>>(32-4);
+	D8Led_symbol(symbol);
 	// espera 100ms para evitar rebotes
+	DelayMs(100);
 	
 	// borra los bits en EXTINTPND  
+	rEXTINTPND = 1<<2 | 1<<3;
 	// borra el bit pendiente en INTPND
-/*}
-*/
+	rI_ISPC = 1<<21;
+}
