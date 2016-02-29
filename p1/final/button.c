@@ -43,6 +43,7 @@ void Eint4567_init(void)
 /* Por precaucion, se vuelven a borrar los bits de INTPND y EXTINTPND */
 	rEXTINTPND = ~0x0;
 	rI_ISPC = ~0x0;
+	symbol = 0;
 }
 
 /*COMENTAR PARA LA PARTE DEL 8-SEGMENTOS
@@ -87,7 +88,7 @@ void Eint4567_ISR(void)
 			break;
 	}
 	// muestra el simbolo en el display
-	symbol &= (~0x0)>>24;
+	symbol &= ((unsigned int)(~0x0))>>(32-4);
 	D8Led_symbol(symbol);
 	// espera 100ms para evitar rebotes
 	DelayMs(100);
