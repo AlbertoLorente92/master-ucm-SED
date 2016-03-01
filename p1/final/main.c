@@ -8,13 +8,14 @@ extern void led1_on();
 extern void leds_switch();
 extern void Eint4567_init(void);
 extern void D8Led_init(void);
-//extern void sys_init();
+extern void sys_init();
 /*--- declaracion de funciones ---*/
 //void Main(void);
 /*--- codigo de funciones ---*/
 
 void Main(void)
 {
+	sys_init();
 	leds_off();
 	Eint4567_init();
 	D8Led_init();

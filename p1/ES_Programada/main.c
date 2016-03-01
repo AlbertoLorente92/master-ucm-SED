@@ -7,7 +7,7 @@ extern void leds_off();
 extern void led1_on();
 extern void leds_switch();
 extern void Eint4567_init(void);
-//extern void sys_init();
+extern void sys_init();
 /*--- declaracion de funciones ---*/
 //void Main(void);
 /*--- codigo de funciones ---*/
@@ -15,9 +15,9 @@ extern void Eint4567_init(void);
 void Main(void)
 {
 	/* Inicializar controladores */
+	sys_init();
 	rPCONG &= ~(1<<12 & 1<<13 & 1<<14 & 1<<15);
 	rPUPG = 0;
-	//sys_init(); // Inicializacion de la placa, interrupciones y puertos
 	/* Establecer valor inicial de los LEDs */
 	leds_off();
 	led1_on();
