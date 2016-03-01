@@ -14,13 +14,9 @@ void Main(void);
 /*--- codigo de funciones ---*/
 void Main(void)
 {
-	/* Inicializar controladores */
-	sys_init(); // Inicializacion de la placa, interrupciones y puertos
-	// Inicializacion del temporizador
-	// Inicialización del teclado matricial
-	keyboard_init();
-	D8Led_init();
-	/* Establecer valor inicial de los LEDs */
+	sys_init();
+	timer_init();
 	leds_off();
+	led1_on();
 	while (1); // espera
 }

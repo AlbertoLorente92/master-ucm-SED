@@ -24,7 +24,7 @@ void keyboard_init()
 	rEXTINT &= ~(1<<6);
 	rEXTINT |= 1<<5;
 	/* Establece la rutina de servicio para EINT1 */
-	pISR_EINT1 = (unsigned *) KeyboardInt;
+	pISR_EINT1 = (unsigned) KeyboardInt;
 		//
 	/* Configurar controlador de interrupciones */
 		// Borra INTPND escribiendo 1s en I_ISPC
