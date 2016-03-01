@@ -28,7 +28,7 @@ void Eint4567_init(void)
 	rINTMSK |= (~(unsigned int)0)>>5; // Enmascarar todas las lineas, bits [0..26].
 	rINTMSK &= ~((1<<21) | (1<<26)); // Habiltar las lineas 21(Eint4567) y 26(bit global)
 	// Establecer la rutina de servicio para Eint4567
-	pISR_EINT4567 = (unsigned *) Eint4567_ISR;
+	pISR_EINT4567 = (unsigned) Eint4567_ISR;
 /* Configuracion del puerto G */
 	// Establece la funcion de los pines (EINT7-EINT0)
 	rPCONG &= ~(1<<12 & 1<<13 & 1<<14 & 1<<15);
@@ -76,9 +76,9 @@ COMENTAR PARA LA PRIMERA PARTE CON INTERRUPCIONES
 int which_int;
 void Eint4567_ISR(void)
 {
-	/*Identificar la interrupcion*/
+	//Identificar la interrupcion
 	//which_int = rEXTINTPND;
-	/* Actualizar simbolo*/
+	//Actualizar simbolo*/
 	//switch (which_int) {
 	//
 	//}

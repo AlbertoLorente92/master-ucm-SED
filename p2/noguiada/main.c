@@ -4,7 +4,6 @@
 #include "stdio.h"
 /*--- funciones externas ---*/
 extern void leds_off();
-extern void led1_on();
 extern void keyboard_init();
 extern void D8Led_init(void);
 

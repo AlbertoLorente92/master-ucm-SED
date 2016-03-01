@@ -9,6 +9,7 @@ int symbol = 0;
 /*--- declaracion de funciones ---*/
 void Eint4567_ISR(void) __attribute__ ((interrupt ("IRQ")));
 void Eint4567_init(void);
+extern void leds_off();
 extern void led1_on();
 extern void led2_on();
 extern void D8Led_symbol(int value);
@@ -30,7 +31,7 @@ void Eint4567_init(void)
 	rINTMSK |= (~(unsigned int)0)>>5; // Enmascarar todas las lineas, bits [0..26].
 	rINTMSK &= ~((1<<21) | (1<<26)); // Habiltar las lineas 21(Eint4567) y 26(bit global)
 	// Establecer la rutina de servicio para Eint4567
-	pISR_EINT4567 = (unsigned *) Eint4567_ISR;
+	pISR_EINT4567 = (unsigned) Eint4567_ISR;
 /* Configuracion del puerto G */
 	// Establece la funcion de los pines (EINT7-EINT0)
 	rPCONG &= ~(1<<12 & 1<<13 & 1<<14 & 1<<15);
@@ -82,14 +83,13 @@ void Eint4567_ISR(void)
 	/*Identificar la interrupcion*/
 	which_int = rEXTINTPND & (1<<2 | 1<<3);
 	/* Actualizar simbolo*/
+	leds_off();
 	switch (which_int) {
 		case 1<<2:
-			leds_off();
 			led1_on();
 			symbol += 1;
 			break;
 		case 1<<3:
-			leds_off();
 			led2_on();
 			symbol -= 1;
 			break;
