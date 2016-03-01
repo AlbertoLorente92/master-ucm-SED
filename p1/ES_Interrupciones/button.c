@@ -10,7 +10,6 @@ int symbol = 0;
 void Eint4567_ISR(void) __attribute__ ((interrupt ("IRQ")));
 void Eint4567_init(void);
 extern void leds_switch ();
-extern void D8Led_symbol(int value);
 
 /*--- codigo de funciones ---*/
 void Eint4567_init(void)

@@ -9,7 +9,6 @@ int symbol = 0;
 /*--- declaracion de funciones ---*/
 void Eint4567_ISR(void) __attribute__ ((interrupt ("IRQ")));
 void Eint4567_init(void);
-extern void leds_switch ();
 extern void led1_on();
 extern void led2_on();
 extern void D8Led_symbol(int value);

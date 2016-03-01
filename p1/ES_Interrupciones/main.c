@@ -5,7 +5,6 @@
 /*--- funciones externas ---*/
 extern void leds_off();
 extern void led1_on();
-extern void leds_switch();
 extern void Eint4567_init(void);
 extern void sys_init();
 /*--- declaracion de funciones ---*/
