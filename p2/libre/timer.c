@@ -2,13 +2,17 @@
 #include "44b.h"
 #include "44blib.h"
 /*--- funciones externas ---*/
-extern void leds_switch();
+extern void D8Led_symbol(int value);
 /*--- declaracion de funciones ---*/
 void timer_ISR(void) __attribute__ ((interrupt ("IRQ")));
-void timer_init(void);
+void timer_init(int* count, int* dir, int* timer);
 /*--- codigo de las funciones ---*/
 
-void timer_init(void)
+int* _count;
+int* _dir;
+int* _timer;
+
+void timer_init(int* count, int* dir, int* timer)
 {
 	// Configuracion del controlador de interrupciones */
 	// Configura las lineas como de tipo IRQ mediante INTMOD
@@ -32,9 +36,9 @@ void timer_init(void)
 	//Fijar divisor 0
 		// Ya fijado
 	//Fijar divisor 1
-	rTCFG1 |= 0x1<<4;
+	rTCFG1 |= 0x2<<4;
 	//Fijar divisor 2
-	rTCFG1 |= 0x2<<8;
+	rTCFG1 |= 0x4<<8;
 
 	rTCNTB0=65535;
 	rTCNTB1=65535;
@@ -51,10 +55,27 @@ void timer_init(void)
 	rTCON |= (0x1<<3 | 0x1<<11 | 0x1<<15);
 	//Iniciar timer
 	rTCON |= (0x1<<0 | 0x1<<8 | 0x1<<12);
+
+	_count = count;
+	_dir = dir;
+	_timer = timer;
 }
 
 void timer_ISR(void){
-	if ((rI_ISPR & BIT_TIMER2) != 0 ){
-		leds_switch();}
+	if ( ((rI_ISPR & BIT_TIMER0)!=0) && *_timer==0 ){
+		*_count += *_dir;
+		*_count &= ((unsigned int)(~0x0))>>(32-4);
+		D8Led_symbol(*_count);
+	}
+	if ( ((rI_ISPR & BIT_TIMER1)!=0) && *_timer==1 ){
+		*_count += *_dir;
+		*_count &= ((unsigned int)(~0x0))>>(32-4);
+		D8Led_symbol(*_count);
+	}
+	if ( ((rI_ISPR & BIT_TIMER2)!=0) && *_timer==2 ){
+		*_count += *_dir;
+		*_count &= ((unsigned int)(~0x0))>>(32-4);
+		D8Led_symbol(*_count);
+	}
 	rI_ISPC = BIT_TIMER0 | BIT_TIMER1 | BIT_TIMER2 ;
 }

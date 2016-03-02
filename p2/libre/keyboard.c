@@ -7,13 +7,14 @@
 /*--- Variables globales ---*/
 volatile UCHAR *keyboard_base = (UCHAR *)0x06000000;
 int key;
-/*--- Funciones externas ---*/
-void D8Led_symbol(int value);
 /*--- Declaracion de funciones ---*/
 void keyboard_init();
 void KeyboardInt(void) __attribute__ ((interrupt ("IRQ")));
+void key_read();
+int* _timer;
+
 /*--- Codigo de las funciones ---*/
-void keyboard_init()
+void keyboard_init(int* timer)
 {
 	/* Configurar el puerto G (si no lo estuviese ya) */	
 		// Establece la funcion de los pines (EINT0-7)
@@ -35,34 +36,29 @@ void keyboard_init()
 	rINTCON &= ~(0x1<<1 | 0x1<<2);
 	rINTCON |= 0x1<<0;
 	/* Habilitar linea EINT1 */
-	rINTMSK |= (~(unsigned int)0)>>5; // Enmascarar todas las lineas, bits [0..26].
 	rINTMSK &= ~((1<<24) | (1<<26)); // Habiltar las lineas 24(Eint1) y 26(bit global)
 	/* Por precaucion, se vuelven a borrar los bits de INTPND correspondientes*/
 	rI_ISPC = ~0x0;
+
+	_timer = timer;
 }
 void KeyboardInt(void)
 {
-	/* Esperar trp mediante la funcion DelayMs()*/
+	// Esperar trp mediante la funcion DelayMs()*/
 	DelayMs(20);
-	/* Identificar la tecla */
-	key = key_read();
-	/* Si la tecla se ha identificado, visualizarla en el 8SEG*/
-	if(key > -1)
-	{
-		D8Led_symbol(key);
-	}
-	/* Esperar a se libere la tecla: consultar bit 1 del registro de datos del puerto G */
+	// Identificar la tecla */
+	key_read();
+	// Esperar a se libere la tecla: consultar bit 1 del registro de datos del puerto G */
 	while ((rPDATG & (1<<1)) == 0 ){
 		//NOTHING
 	}
-	/* Esperar trd mediante la funcion Delay() */
+	// Esperar trd mediante la funcion Delay() */
 	DelayMs(100);
-	/* Borrar interrupción de teclado */
+	// Borrar interrupción de teclado */
 	rI_ISPC = 1<<24;
 }
-int key_read()
+void key_read()
 {
-	int value= -1;
 	char temp;
 	// Identificar la tecla mediante ''scanning''
 	// Si la identificación falla la función debe devolver -1
@@ -70,46 +66,14 @@ int key_read()
 	//Usamos KEY_VALUE_MASK para quedarnos con los 4 bits menos significativos
 
 	switch (temp) {
-		case 0x7:  value = 0; break;
-		case 0xB:  value = 1; break;
-		case 0xD:  value = 2; break;
-		case 0xE:  value = 3; break;
+		case 0x7:
+			*_timer = 0;
+			break;
+		case 0xB:
+			*_timer = 1;
+			break;
+		case 0xD:
+			*_timer = 2;
+			break;
 	}
-
-	temp = *(keyboard_base + 0xfb) & KEY_VALUE_MASK;
-	//Usamos KEY_VALUE_MASK para quedarnos con los 4 bits menos significativos
-
-	switch (temp) {
-		case 0x7:  value = 4; break;
-		case 0xB:  value = 5; break;
-		case 0xD:  value = 6; break;
-		case 0xE:  value = 7; break;
-	}
-
-	temp = *(keyboard_base + 0xf7) & KEY_VALUE_MASK;
-	//Usamos KEY_VALUE_MASK para quedarnos con los 4 bits menos significativos
-
-	switch (temp) {
-		case 0x7:  value = 8; break;
-		case 0xB:  value = 9; break;
-		case 0xD:  value = 10; break;
-		case 0xE:  value = 11; break;
-	}
-
-	temp = *(keyboard_base + 0xef) & KEY_VALUE_MASK;
-	//Usamos KEY_VALUE_MASK para quedarnos con los 4 bits menos significativos
-
-	switch (temp) {
-		case 0x7:  value = 12; break;
-		case 0xB:  value = 13; break;
-		case 0xD:  value = 14; break;
-		case 0xE:  value = 15; break;
-	}
-	
-	/*
-	* ESCRIBIR EL CÓDIGO CORRESPONDIENTE A LAS OTRAS FILAS Y COLUMNAS
-	*/
-
-	return value;
-
 }
