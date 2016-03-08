@@ -8,12 +8,17 @@ extern void DelayMs(int ms_time);
 void iic_init( void )
 {
 	// Enable IIC & GPIO & BDMA blocks (si no se activa BDMA, el controlador IIC no es accesible)
+	rCLKCON |= 1<<13 | 1<<10 | 1<<7;
 	
 	// PF[1] = IICSDA, PF[0] = IICSCL
+	rPCONF &= ~(0x1<<0 | 0x1<<2);
+	rPCONF |= 0x1<<1 | 0x1<<3;
 	
 	// Pull-up enable
+	rPUPF &= ~( 0x1<<0 | 0x1<<1);
 	
     //Configurar la dirección del slave
+	rIICADD = S3C44B0X_SLAVE_ADDRESS;
 
     //Generación ACK habilitada, interrupciones habilitadas
 	
