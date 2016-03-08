@@ -20,6 +20,11 @@ void Main( void )
     iic_init();
     D8Led_symbol(8);//8
 
+    for( i=0; i<AT24C04_DEPTH; i++ ){
+      val = (uint8)i%4;
+      golden_at24c04_bytewrite( i, val );
+    }
+
     //Inicializamos la EEPROM
     for( i=0; i<AT24C04_DEPTH; i++ ){
       val = (uint8)i%16;

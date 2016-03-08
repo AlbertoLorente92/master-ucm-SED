@@ -37,6 +37,7 @@ void at24c04_clear( void );
 ** Realiza una escritura aleatoria en la dirección indicada
 */
 void at24c04_bytewrite( uint16 addr, uint8 data );
+void golden_at24c04_bytewrite( uint16 addr, uint8 data );
 
 /*
 ** Realiza una lectura aleatoria de la dirección indicada
