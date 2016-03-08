@@ -17,7 +17,7 @@ void Main( void )
     uint16 i;
     
     sys_init();
-    golden_iic_init();
+    iic_init();
     D8Led_symbol(8);//8
 
     //Inicializamos la EEPROM

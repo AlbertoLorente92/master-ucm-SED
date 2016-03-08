@@ -21,10 +21,12 @@ void iic_init( void )
 	rIICADD = S3C44B0X_SLAVE_ADDRESS;
 
     //Generación ACK habilitada, interrupciones habilitadas
-	
+	rIICCON |= (0x1<<7); //Enable ACK generation.
+	rIICCON |= (0x1<<5); //Enable interrupt
     rIICCON = rIICCON | ((mclk / 4000000 - 1) & 0xf); 	//Valor de preescalado, PREESCALER = mclk/16/250000 -1
 	
     // Activa Tx/Rx
+    rIICSTAT |= 0x1<<4;
 }
 
 void iic_putByte_start( uint8 byte )
