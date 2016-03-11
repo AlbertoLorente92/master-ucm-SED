@@ -47,6 +47,6 @@ void at24c04_byteread( uint16 addr, uint8 *data )
 	iic_putByte_start( (AT24C04_ADDRESS << 2) | (page << 1) | AT24C04_WRITE );  // Lleva el contador de dirección de la EEPROM a la dirección indicada
 	iic_putByte( addr & 0xFF );
 	iic_getByte_start( (AT24C04_ADDRESS << 2) | (page << 1) | AT24C04_READ );
-	*data = golden_iic_getByte_stop( NO_RxACK ); 								// En una EEPROM, no debe generarse ACK tras el último dato recibido
+	*data = iic_getByte_stop( NO_RxACK ); 								// En una EEPROM, no debe generarse ACK tras el último dato recibido
 }
 

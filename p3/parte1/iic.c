@@ -84,7 +84,9 @@ void iic_getByte_start( uint8 byte )
 uint8 iic_getByte( void )
 {
     // Reanuda la recepción (borrando pending bit del IICCON)
+	rIICCON &= ~(0x1<<4);
 	// Espera la recepción del dato
+
     return rIICDS;// Lee el dato
 }
 
@@ -95,15 +97,19 @@ uint8 iic_getByte_stop( int8 ack )
     rIICCON = (rIICCON & ~(1 << 7)) | (ack << 7); // Habilita/deshabilita la generación de ACK
 
     // Reanuda la recepción (borrando pending bit del IICCON)
-	
+    rIICCON &= ~(0x1<<4);
 	// Espera la recepción del dato
-	
+    while( (rIICCON & 0x1<<4) == 0 ){}
     byte = rIICDS;	// Lee el dato
 
    	// Máster Rx, stop condition, Tx/Rx habilitada
+    rIICSTAT |= (0x1<<4 | 0x1<<5 | 0x1<<7);
+    rIICSTAT &= ~(0x1<<6);
+    rIICSTAT &= ~(0x1<<5);
    	// Comienza la trasmisión de STOP (borrando pending bit del IICCON)
+    rIICCON &= ~(0x1<<4);
    	// Espera a que la stop condition tenga efecto (5 ms para la at24c04)
-
+    DelayMs(5);
 	rIICCON |= (1<<7); // Habilita la generación de ACK
    	return byte;
 }
