@@ -34,9 +34,9 @@ void iic_putByte_start( uint8 byte )
 	// Escribe el dato
 	rIICDS = byte;
 	// Máster Tx, start condition, Tx/Rx habilitada
-	 rIICSTAT |= (0x1<<4 | 0x1<<5 | 0x1<<6 | 0x1<<7);
+	rIICSTAT |= (0x1<<4 | 0x1<<5 | 0x1<<6 | 0x1<<7);
 	// Comienza la transmisión (borrando pending bit del IICCON)
-	 rIICCON &= ~(0x1<<4);
+	rIICCON &= ~(0x1<<4);
     // Espera la recepción de ACK
 	while( (rIICCON & 0x1<<4) == 0 ){}
 }
@@ -73,11 +73,12 @@ void iic_getByte_start( uint8 byte )
 	// Escribe el dato
 	rIICDS = byte;
     // Máster Rx, start condition, Tx/Rx habilitada
-	rIICSTAT |= (0x1<<4 | 0x1<<5 | 0x1<<6 | 0x1<<7);
+	rIICSTAT |= (0x1<<4 | 0x1<<5 | 0x1<<7);
+	rIICSTAT &= ~(0x1<<6);
     // Comienza la transmisión (borrando pending bit del IICCON)
 	rIICCON &= ~(0x1<<4);
     // Espera la rececpión de ACK
-	while( rIICCON & 0x1<<4 == 0 ){}
+	while( (rIICCON & 0x1<<4) == 0 ){}
 }
 
 uint8 iic_getByte( void )

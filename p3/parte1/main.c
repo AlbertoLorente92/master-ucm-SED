@@ -31,11 +31,11 @@ void Main( void )
       at24c04_bytewrite( i, val );
     }
 
-    for( i=0; i<AT24C04_DEPTH; i++ ){
+    /*for( i=0; i<AT24C04_DEPTH; i++ ){
       at24c04_byteread( i, &buffer[i] );
     }
 
-    DelayMs(100);
+    DelayMs(100);*/
 
     for( i=0; i<AT24C04_DEPTH; i++ ){
       at24c04_byteread( i, &buffer[i] );
