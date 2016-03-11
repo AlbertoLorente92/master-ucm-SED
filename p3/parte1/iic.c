@@ -86,7 +86,7 @@ uint8 iic_getByte( void )
     // Reanuda la recepción (borrando pending bit del IICCON)
 	rIICCON &= ~(0x1<<4);
 	// Espera la recepción del dato
-
+	while( (rIICCON & 0x1<<4) == 0 ){}
     return rIICDS;// Lee el dato
 }
 
@@ -95,12 +95,14 @@ uint8 iic_getByte_stop( int8 ack )
 	uint8 byte;
 
     rIICCON = (rIICCON & ~(1 << 7)) | (ack << 7); // Habilita/deshabilita la generación de ACK
-
+	
+	byte = iic_getByte();
+	/*
     // Reanuda la recepción (borrando pending bit del IICCON)
     rIICCON &= ~(0x1<<4);
 	// Espera la recepción del dato
     while( (rIICCON & 0x1<<4) == 0 ){}
-    byte = rIICDS;	// Lee el dato
+    byte = rIICDS;	// Lee el dato*/
 
    	// Máster Rx, stop condition, Tx/Rx habilitada
     rIICSTAT |= (0x1<<4 | 0x1<<5 | 0x1<<7);
