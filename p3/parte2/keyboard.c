@@ -11,10 +11,10 @@ int key;
 void keyboard_init();
 void KeyboardInt(void) __attribute__ ((interrupt ("IRQ")));
 void key_read();
-uint* frag;
+int* frag;
 
 /*--- Codigo de las funciones ---*/
-void keyboard_init(uint* timer)
+void keyboard_init(int* timer)
 {
 	/* Configurar el puerto G (si no lo estuviese ya) */	
 		// Establece la funcion de los pines (EINT0-7)

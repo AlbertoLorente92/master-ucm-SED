@@ -5,7 +5,7 @@
 /*--- variables globales ---*/
 int state = 0;
 uint8 lastDir = 0;
-uint8 lastDato = 0;
+uint8 lastDat = 0;
 /*--- funciones externas ---*/
 //extern void D8Led_Symbol(int value);
 /*--- declaracion de funciones ---*/
@@ -19,15 +19,15 @@ extern void D8Led_symbol(int value);
 /*--- Variables globales ---*/
 volatile UCHAR *keyboard_base = (UCHAR *)0x06000000;
 
-uint* frag = 0;
-uint* dir1MasSig = 0;
-uint* dir2MenSig = 0;
+int* frag = 0;
+int* dir1MasSig = 0;
+int* dir2MenSig = 0;
 
-uint* dato1MasSig = 0;
-uint* dato2MenSig = 0;
+int* dato1MasSig = 0;
+int* dato2MenSig = 0;
 
 /*--- codigo de funciones ---*/
-void Eint4567_init(uint* timer,uint* dir1,uint* dir2,uint* dato1,uint* dato2)
+void Eint4567_init(int* timer,int* dir1,int* dir2,int* dato1,int* dato2)
 {
 /* Configuracion del controlador de interrupciones */
 	// Borra EXTINTPND escribiendo 1s en el propio registro
@@ -62,7 +62,7 @@ void Eint4567_init(uint* timer,uint* dir1,uint* dir2,uint* dato1,uint* dato2)
 	dato1MasSig = dato1;
 	dato2MenSig = dato2;	
 	lastDir = 0;
-	lastDato = 0;
+	lastDat = 0;
 }
 
 int which_int;
@@ -125,14 +125,14 @@ void Eint4567_ISR(void)
 				
 				case 5:
 					//Escribir en el teclado
-					uint dir1 = int_to_int(dir1MasSig);
-					uint dir2 = int_to_int(dir2MenSig);
-					uint dat1 = int_to_int(dato1MasSig);
-					uint dat2 = int_to_int(dato2MenSig);
-					uint8 dir = dir1<<4 & dir2;
-					uint8 dato = dat1<<4 & dat2;
+					uint dir1 = (((unsigned int)(~0x0))>>(32-4)&(dir1MasSig));
+					uint dir2 = (((unsigned int)(~0x0))>>(32-4)&(dir2MenSig))<<4;
+					uint dat1 = (((unsigned int)(~0x0))>>(32-4)&(dato1MasSig));
+					uint dat2 = (((unsigned int)(~0x0))>>(32-4)&(dato2MenSig))<<4;
+					uint8 dir = dir1 | dir2;
+					uint8 dat = dat1 | dat2;
 					lastDir = dir;
-					lastDato = dato;
+					lastDat = dat;
 					at24c04_bytewrite( dir, dato );
 				break;
 			}
@@ -159,10 +159,4 @@ void Eint4567_ISR(void)
 	rEXTINTPND = 1<<2 | 1<<3;
 	// borra el bit pendiente en INTPND
 	rI_ISPC = 1<<21;
-}
-
-unsigned int_to_int(unsigned k) {
-    if (k == 0) return 0;
-    if (k == 1) return 1;                       /* optional */
-    return (k % 2) + 10 * int_to_int(k / 2);
 }

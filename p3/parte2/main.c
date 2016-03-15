@@ -16,13 +16,13 @@ void Main( void )
     //uint8 buffer[AT24C04_DEPTH];
     //uint16 i;
     
-	uint* frag = malloc(sizeof(uint));	*frag = 0;
+	int* frag = malloc(sizeof(int));	*frag = 0;
 	
-	uint* dir1MasSig = malloc(sizeof(uint));	*dir1MasSig = 0;
-	uint* dir2MenSig = malloc(sizeof(uint));	*dir2MenSig = 0;
+	int* dir1MasSig = malloc(sizeof(int));	*dir1MasSig = 0;
+	int* dir2MenSig = malloc(sizeof(int));	*dir2MenSig = 0;
 	
-	uint* dato1MasSig = malloc(sizeof(uint));	*dato1MasSig = 0;
-	uint* dato2MenSig = malloc(sizeof(uint));	*dato2MenSig = 0;	
+	int* dato1MasSig = malloc(sizeof(int));	*dato1MasSig = 0;
+	int* dato2MenSig = malloc(sizeof(int));	*dato2MenSig = 0;	
 	
     sys_init();
     iic_init();
