@@ -1,33 +1,29 @@
 /*--- ficheros de cabecera ---*/
-#include "44blib.h"
+#include "common_types.h"
 #include "44b.h"
 #include "def.h"
+#include "at24c04.h"
 /*--- variables globales ---*/
-int state = 0;
-uint8 lastDir = 0;
-uint8 lastDat = 0;
+
 /*--- funciones externas ---*/
 //extern void D8Led_Symbol(int value);
 /*--- declaracion de funciones ---*/
 void Eint4567_ISR(void) __attribute__ ((interrupt ("IRQ")));
-void Eint4567_init(void);
+void Eint4567_init(int* _estado, int* _control, uint16* _dir, uint8* _dato);
 extern void leds_off();
 extern void led1_on();
 extern void led2_on();
 extern void D8Led_symbol(int value);
-#define KEY_VALUE_MASK 0xF
 /*--- Variables globales ---*/
-volatile UCHAR *keyboard_base = (UCHAR *)0x06000000;
 
-int* frag = 0;
-int* dir1MasSig = 0;
-int* dir2MenSig = 0;
-
-int* dato1MasSig = 0;
-int* dato2MenSig = 0;
+int* estado;
+int* control;
+uint16* dir;
+uint8* dato;
+uint16 lastDir = 0;
 
 /*--- codigo de funciones ---*/
-void Eint4567_init(int* timer,int* dir1,int* dir2,int* dato1,int* dato2)
+void Eint4567_init(int* _estado, int* _control, uint16* _dir, uint8* _dato)
 {
 /* Configuracion del controlador de interrupciones */
 	// Borra EXTINTPND escribiendo 1s en el propio registro
@@ -46,7 +42,7 @@ void Eint4567_init(int* timer,int* dir1,int* dir2,int* dato1,int* dato2)
 	pISR_EINT4567 = (unsigned) Eint4567_ISR;
 /* Configuracion del puerto G */
 	// Establece la funcion de los pines (EINT7-EINT0)
-	rPCONG &= ~(1<<12 & 1<<13 & 1<<14 & 1<<15);
+	rPCONG &= ~(1<<12 | 1<<13 | 1<<14 | 1<<15);
 	//Habilita las resistencias de pull-up
 	rPUPG = 0;
 	// Configura las lineas de int. como de flanco de bajada mediante EXTINT
@@ -55,17 +51,13 @@ void Eint4567_init(int* timer,int* dir1,int* dir2,int* dato1,int* dato2)
 /* Por precaucion, se vuelven a borrar los bits de INTPND y EXTINTPND */
 	rEXTINTPND = ~0x0;
 	rI_ISPC = ~0x0;
-	state = 0;
-	frag = timer;
-	dir1MasSig = dir1;
-	dir2MenSig = dir2;
-	dato1MasSig = dato1;
-	dato2MenSig = dato2;	
-	lastDir = 0;
-	lastDat = 0;
+
+	/*estado 	= _estado;
+	control	= _control;
+	dir 	= _dir;
+	dato 	= _dato;*/
 }
 
-int which_int;
 void Eint4567_ISR(void)
 {
 	/*Evitamos los rebotes de los pulsadores con la e/s programada comprobando tras
@@ -78,85 +70,57 @@ void Eint4567_ISR(void)
 		return;
 	}
 
-	/*Identificar la interrupcion*/
+	/**/
+	//Conmutamos LEDs
+	leds_switch();
+	//Delay para eliminar rebotes
+	DelayMs(100);
+
+	/*Atendemos interrupciones*/
+	//Borramos EXTINTPND ambas líneas EINT7 y EINT6
+	rEXTINTPND = 1<<2 | 1<<3;
+	//Borramos INTPND usando ISPC
+	rI_ISPC = 1<<21;
+}
+
+/*void Eint4567_ISR(void)
+{
+	led1_on();
 	which_int = rEXTINTPND & (1<<2 | 1<<3);
-	/* Actualizar simbolo*/
+	//uint8 lectura;
+	//Actualizar simbolo
 	switch (which_int) {
-		case 1<<2:			
-			switch(state){
-				case 0:	
-				break;
-				
-				case 1:
-					//Espera activa al teclado matricial
-					while(	(*(keyboard_base + 0xfd) & KEY_VALUE_MASK) == -1 &&
-							(*(keyboard_base + 0xfb) & KEY_VALUE_MASK) == -1 &&
-							(*(keyboard_base + 0xf7) & KEY_VALUE_MASK) == -1 &&
-							(*(keyboard_base + 0xef) & KEY_VALUE_MASK) == -1){}
-					*dir1MasSig = frag;			//igualar contenido no apuntar a frag
-				break;
-				
-				case 2:
-					//Espera activa al teclado matricial
-					while(	(*(keyboard_base + 0xfd) & KEY_VALUE_MASK) == -1 &&
-							(*(keyboard_base + 0xfb) & KEY_VALUE_MASK) == -1 &&
-							(*(keyboard_base + 0xf7) & KEY_VALUE_MASK) == -1 &&
-							(*(keyboard_base + 0xef) & KEY_VALUE_MASK) == -1){}
-					*dir2MenSig = frag;			//igualar contenido no apuntar a frag
-				break;
-				
-				case 3:
-					//Espera activa al teclado matricial
-					while(	(*(keyboard_base + 0xfd) & KEY_VALUE_MASK) == -1 &&
-							(*(keyboard_base + 0xfb) & KEY_VALUE_MASK) == -1 &&
-							(*(keyboard_base + 0xf7) & KEY_VALUE_MASK) == -1 &&
-							(*(keyboard_base + 0xef) & KEY_VALUE_MASK) == -1){}
-					*dato1MasSig = frag;			//igualar contenido no apuntar a frag
-				break;
-				
-				case 4:
-					//Espera activa al teclado matricial
-					while(	(*(keyboard_base + 0xfd) & KEY_VALUE_MASK) == -1 &&
-							(*(keyboard_base + 0xfb) & KEY_VALUE_MASK) == -1 &&
-							(*(keyboard_base + 0xf7) & KEY_VALUE_MASK) == -1 &&
-							(*(keyboard_base + 0xef) & KEY_VALUE_MASK) == -1){}
-					*dato2MenSig = frag;			//igualar contenido no apuntar a frag
-				break;
-				
-				case 5:
-					//Escribir en el teclado
-					uint dir1 = (((unsigned int)(~0x0))>>(32-4)&(dir1MasSig));
-					uint dir2 = (((unsigned int)(~0x0))>>(32-4)&(dir2MenSig))<<4;
-					uint dat1 = (((unsigned int)(~0x0))>>(32-4)&(dato1MasSig));
-					uint dat2 = (((unsigned int)(~0x0))>>(32-4)&(dato2MenSig))<<4;
-					uint8 dir = dir1 | dir2;
-					uint8 dat = dat1 | dat2;
-					lastDir = dir;
-					lastDat = dat;
-					at24c04_bytewrite( dir, dato );
+		case 1<<2:
+			if (*control == 0){
 				break;
 			}
-			state = (state+1) % 6;
+			*control = 0;
+			*estado = (*estado + 1) % 6;
+
+			if (*estado == 3){
+				lastDir = *dir;
+			}
+			if (*estado == 5){
+				at24c04_bytewrite( *dir, *dato );
+				*control = 1;
+			}
+			if(*estado == 0){
+				*control = 1;
+			}
 			break;
 		case 1<<3:
-			uint8 lectura;
-			at24c04_byteread(lastDir,lectura);
-			state = 0;
-			int val = lectura & 0xF;
-			D8Led_symbol(val);
-			DelayMs(100);
+
+			//at24c04_byteread(lastDir, &lectura);
+			//int val = lectura & 0xF;
+			D8Led_symbol(4);
 			break;
 		default:
 			break;
 	}
-	// muestra el simbolo en el display
-	//----symbol &= ((unsigned int)(~0x0))>>(32-4);
-	//----D8Led_symbol(symbol);
-	// espera 100ms para evitar rebotes
+
 	DelayMs(100);
-	
 	// borra los bits en EXTINTPND  
 	rEXTINTPND = 1<<2 | 1<<3;
 	// borra el bit pendiente en INTPND
 	rI_ISPC = 1<<21;
-}
+}*/

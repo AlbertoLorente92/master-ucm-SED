@@ -6,53 +6,59 @@ extern void DelayMs(int ms_time);
 extern void sys_init();
 extern void iic_init();
 extern void D8Led_symbol(int value);
-extern void at24c04_bytewrite( uint16 addr, uint8 data );
-extern void at24c04_byteread( uint16 addr, uint8 *data );
+extern void leds_off();
+extern void led1_on();
+extern void led2_on();
+extern void Eint4567_init(int* _estado, int* _control, uint16* _dir, uint8* _dato);
 
-int val;
 
 void Main( void )
 {
-    //uint8 buffer[AT24C04_DEPTH];
-    //uint16 i;
-    
-	int* frag = malloc(sizeof(int));	*frag = 0;
-	
-	int* dir1MasSig = malloc(sizeof(int));	*dir1MasSig = 0;
-	int* dir2MenSig = malloc(sizeof(int));	*dir2MenSig = 0;
-	
-	int* dato1MasSig = malloc(sizeof(int));	*dato1MasSig = 0;
-	int* dato2MenSig = malloc(sizeof(int));	*dato2MenSig = 0;	
+	int* estado		= malloc(sizeof(int));		*estado = 0;
+	int* control	= malloc(sizeof(int));		*control = 1;
+	uint16* dir 	= malloc(sizeof(uint16));	*dir = 0;
+	uint8* dato 	= malloc(sizeof(uint8));	*dato = 0;
 	
     sys_init();
-    iic_init();
-    D8Led_symbol(8);//8
-	keyboard_init(frag);
-	Eint4567_init(frag,dir1MasSig,dir2MenSig,dato1MasSig,dato2MenSig);
+	D8Led_init();
+    Eint4567_init(estado, control, dir, dato);
+    //keyboard_init(estado, control, dir, dato);
+    //iic_init();
+    D8Led_symbol(7);
 
-    /*for( i=0; i<AT24C04_DEPTH; i++ ){
-      val = (uint8)i%4;
-      golden_at24c04_bytewrite( i, val );
+    leds_off();
+    led1_on();
+
+	int aux = 0;
+    while( 1 ){
+    	/*DelayMs(50);
+    	aux = (aux + 1) % 2;
+    	if(*estado == 0){
+    		leds_off();
+    	}
+    	if(*estado == 1){
+    		leds_off();
+    		led1_on();
+    	}
+    	if(*estado == 2){
+    		leds_off();
+    		led2_on();
+    	}
+    	if(*estado == 3){
+    		led1_on();
+    		led2_on();
+    	}
+    	if(*estado == 4){
+    		leds_off();
+    		if (aux == 1){
+    			led1_on();
+    		}
+    	}
+    	if(*estado == 5){
+    		leds_off();
+    		if (aux == 1){
+    			led2_on();
+    		}
+    	}*/
     }
-
-    //Inicializamos la EEPROM
-    for( i=0; i<AT24C04_DEPTH; i++ ){
-      val = (uint8)i%16;
-      at24c04_bytewrite( i, val );
-    }
-
-    /*for( i=0; i<AT24C04_DEPTH; i++ ){
-      at24c04_byteread( i, &buffer[i] );
-    }
-
-    DelayMs(100);*/
-
-    /*for( i=0; i<AT24C04_DEPTH; i++ ){
-      at24c04_byteread( i, &buffer[i] );
-      val = buffer[i] & 0xF;
-      D8Led_symbol(val);
-      DelayMs(100);
-    }*/
-
-    while( 1 );
 }

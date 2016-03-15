@@ -1,20 +1,25 @@
 /*--- Ficheros de cabecera ---*/
 #include "44b.h"
-#include "44blib.h"
 #include "def.h"
+#include "common_types.h"
+
 /*--- Definición de macros ---*/
 #define KEY_VALUE_MASK 0xF
 /*--- Variables globales ---*/
 volatile UCHAR *keyboard_base = (UCHAR *)0x06000000;
 int key;
 /*--- Declaracion de funciones ---*/
-void keyboard_init();
+void keyboard_init(int* _estado, int* _control, uint16* _dir, uint8* _dato);
 void KeyboardInt(void) __attribute__ ((interrupt ("IRQ")));
 void key_read();
-int* frag;
+
+int* estado;
+int* control;
+uint16* dir;
+uint8* dato;
 
 /*--- Codigo de las funciones ---*/
-void keyboard_init(int* timer)
+void keyboard_init(int* _estado, int* _control, uint16* _dir, uint8* _dato)
 {
 	/* Configurar el puerto G (si no lo estuviese ya) */	
 		// Establece la funcion de los pines (EINT0-7)
@@ -40,7 +45,10 @@ void keyboard_init(int* timer)
 	/* Por precaucion, se vuelven a borrar los bits de INTPND correspondientes*/
 	rI_ISPC = ~0x0;
 
-	frag = timer;
+	estado 	= _estado;
+	control	= _control;
+	dir 	= _dir;
+	dato 	= _dato;
 }
 void KeyboardInt(void)
 {
@@ -59,6 +67,10 @@ void KeyboardInt(void)
 }
 void key_read()
 {
+	if (*control == 1){
+		return;
+	}
+
 	int value= -1;
 	char temp;
 	// Identificar la tecla mediante ''scanning''
@@ -67,40 +79,54 @@ void key_read()
 	//Usamos KEY_VALUE_MASK para quedarnos con los 4 bits menos significativos
 
 	switch (temp) {
-		case 0x7:  *frag = 0; break;
-		case 0xB:  *frag = 1; break;
-		case 0xD:  *frag = 2; break;
-		case 0xE:  *frag = 3; break;
+		case 0x7:  value = 0; break;
+		case 0xB:  value = 1; break;
+		case 0xD:  value = 2; break;
+		case 0xE:  value = 3; break;
 	}
 
 	temp = *(keyboard_base + 0xfb) & KEY_VALUE_MASK;
 	//Usamos KEY_VALUE_MASK para quedarnos con los 4 bits menos significativos
 
 	switch (temp) {
-		case 0x7:  *frag = 4; break;
-		case 0xB:  *frag = 5; break;
-		case 0xD:  *frag = 6; break;
-		case 0xE:  *frag = 7; break;
+		case 0x7:  value = 4; break;
+		case 0xB:  value = 5; break;
+		case 0xD:  value = 6; break;
+		case 0xE:  value = 7; break;
 	}
 
 	temp = *(keyboard_base + 0xf7) & KEY_VALUE_MASK;
 	//Usamos KEY_VALUE_MASK para quedarnos con los 4 bits menos significativos
 
 	switch (temp) {
-		case 0x7:  *frag = 8; break;
-		case 0xB:  *frag = 9; break;
-		case 0xD:  *frag = 10; break;
-		case 0xE:  *frag = 11; break;
+		case 0x7:  value = 8; break;
+		case 0xB:  value = 9; break;
+		case 0xD:  value = 10; break;
+		case 0xE:  value = 11; break;
 	}
 
 	temp = *(keyboard_base + 0xef) & KEY_VALUE_MASK;
 	//Usamos KEY_VALUE_MASK para quedarnos con los 4 bits menos significativos
 
 	switch (temp) {
-		case 0x7:  *frag = 12; break;
-		case 0xB:  *frag = 13; break;
-		case 0xD:  *frag = 14; break;
-		case 0xE:  *frag = 15; break;
+		case 0x7:  value = 12; break;
+		case 0xB:  value = 13; break;
+		case 0xD:  value = 14; break;
+		case 0xE:  value = 15; break;
 	}
 
+	if(*estado == 1){
+		*dir = value<<4;
+	}
+	if(*estado == 2){
+		*dir = *dir | value;
+	}
+	if(*estado == 3){
+		*dato = value<<4;
+	}
+	if(*estado == 4){
+		*dato = *dato | value;
+	}
+
+	*control = 1;
 }
