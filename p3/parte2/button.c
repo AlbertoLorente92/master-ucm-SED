@@ -81,8 +81,13 @@ void Eint4567_ISR(void)
 			break;
 		case 1<<3:
 			at24c04_byteread(lastDir, &lectura);
-			int val = lectura & 0xF;
+			int val = lectura >> 4;
 			D8Led_symbol(val);
+	    	DelayMs(1000);
+	    	val = lectura & 0xF;
+	    	D8Led_symbol(val);
+
+
 			break;
 		default:
 			break;
