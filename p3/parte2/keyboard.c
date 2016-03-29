@@ -9,21 +9,21 @@
 volatile UCHAR *keyboard_base = (UCHAR *)0x06000000;
 int key;
 /*--- Declaracion de funciones ---*/
-void keyboard_init(int* _estado, int* _control, uint16* _dir, uint8* _dato);
+void keyboard_init();
 void KeyboardInt(void) __attribute__ ((interrupt ("IRQ")));
 void key_read();
 
-int* estado;
-int* control;
-uint16* dir;
-uint8* dato;
+extern int estado;
+extern int control;
+extern uint16 dir;
+extern uint8 dato;
 
 /*--- Codigo de las funciones ---*/
-void keyboard_init(int* _estado, int* _control, uint16* _dir, uint8* _dato)
+void keyboard_init()
 {
 	/* Configurar el puerto G (si no lo estuviese ya) */	
 		// Establece la funcion de los pines (EINT0-7)
-	rPCONG &= ~(1<<2 & 1<<3);
+	rPCONG |= (1<<2 | 1<<3);
 		// Habilita el "pull up" del puerto
 	rPUPG = 0;
 		// Configura las lineas de int. como de flanco de bajada mediante EXTINT
@@ -45,10 +45,6 @@ void keyboard_init(int* _estado, int* _control, uint16* _dir, uint8* _dato)
 	/* Por precaucion, se vuelven a borrar los bits de INTPND correspondientes*/
 	rI_ISPC = ~0x0;
 
-	estado 	= _estado;
-	control	= _control;
-	dir 	= _dir;
-	dato 	= _dato;
 }
 void KeyboardInt(void)
 {
@@ -67,7 +63,7 @@ void KeyboardInt(void)
 }
 void key_read()
 {
-	if (*control == 1){
+	if (control == 1){
 		return;
 	}
 
@@ -115,18 +111,18 @@ void key_read()
 		case 0xE:  value = 15; break;
 	}
 
-	if(*estado == 1){
-		*dir = value<<4;
+	if(estado == 1){
+		dir = value<<4;
 	}
-	if(*estado == 2){
-		*dir = *dir | value;
+	if(estado == 2){
+		dir = dir | value;
 	}
-	if(*estado == 3){
-		*dato = value<<4;
+	if(estado == 3){
+		dato = value<<4;
 	}
-	if(*estado == 4){
-		*dato = *dato | value;
+	if(estado == 4){
+		dato = dato | value;
 	}
 
-	*control = 1;
+	control = 1;
 }
