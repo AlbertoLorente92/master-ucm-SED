@@ -21,17 +21,17 @@ void Main( void )
 	
     sys_init();
 	D8Led_init();
-    Eint4567_init(estado, control, dir, dato);
+    //Eint4567_init(estado, control, dir, dato);
     //keyboard_init(estado, control, dir, dato);
     //iic_init();
     D8Led_symbol(7);
 
     leds_off();
     led1_on();
-
+    *estado = 1;
 	int aux = 0;
     while( 1 ){
-    	/*DelayMs(50);
+    	DelayMs(50);
     	aux = (aux + 1) % 2;
     	if(*estado == 0){
     		leds_off();
@@ -59,6 +59,6 @@ void Main( void )
     		if (aux == 1){
     			led2_on();
     		}
-    	}*/
+    	}
     }
 }

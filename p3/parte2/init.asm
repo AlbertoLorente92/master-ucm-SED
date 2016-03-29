@@ -3,6 +3,7 @@
     .equ STACK, 0x0C7FF000
 
 start: 
+
     LDR SP,=STACK
     MOV FP,#0
     

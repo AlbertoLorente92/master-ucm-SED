@@ -36,13 +36,12 @@ void Eint4567_init(int* _estado, int* _control, uint16* _dir, uint8* _dato)
 	rINTCON &= ~(0x1<<1 | 0x1<<2);
 	rINTCON |= 0x1<<0;
 	// Enmascara todas las lineas excepto Eint4567 y el bit global (INTMSK)
-	rINTMSK |= (~(unsigned int)0)>>5; // Enmascarar todas las lineas, bits [0..26].
 	rINTMSK &= ~((1<<21) | (1<<26)); // Habiltar las lineas 21(Eint4567) y 26(bit global)
 	// Establecer la rutina de servicio para Eint4567
 	pISR_EINT4567 = (unsigned) Eint4567_ISR;
 /* Configuracion del puerto G */
 	// Establece la funcion de los pines (EINT7-EINT0)
-	rPCONG &= ~(1<<12 | 1<<13 | 1<<14 | 1<<15);
+	rPCONG |= (1<<12 | 1<<13 | 1<<14 | 1<<15);
 	//Habilita las resistencias de pull-up
 	rPUPG = 0;
 	// Configura las lineas de int. como de flanco de bajada mediante EXTINT
@@ -52,38 +51,14 @@ void Eint4567_init(int* _estado, int* _control, uint16* _dir, uint8* _dato)
 	rEXTINTPND = ~0x0;
 	rI_ISPC = ~0x0;
 
-	/*estado 	= _estado;
+	estado 	= _estado;
 	control	= _control;
 	dir 	= _dir;
-	dato 	= _dato;*/
+	dato 	= _dato;
 }
 
+int which_int;
 void Eint4567_ISR(void)
-{
-	/*Evitamos los rebotes de los pulsadores con la e/s programada comprobando tras
-	 * 10ms si la señal esta activada*/
-	DelayMs(10);
-	if (!((rPDATG & (1<<6)) == 0 || (rPDATG & (1<<7)) == 0 )){
-		//borrar flag de la int.
-		rEXTINTPND = 1<<2 | 1<<3;
-		rI_ISPC = 1<<21;
-		return;
-	}
-
-	/**/
-	//Conmutamos LEDs
-	leds_switch();
-	//Delay para eliminar rebotes
-	DelayMs(100);
-
-	/*Atendemos interrupciones*/
-	//Borramos EXTINTPND ambas líneas EINT7 y EINT6
-	rEXTINTPND = 1<<2 | 1<<3;
-	//Borramos INTPND usando ISPC
-	rI_ISPC = 1<<21;
-}
-
-/*void Eint4567_ISR(void)
 {
 	led1_on();
 	which_int = rEXTINTPND & (1<<2 | 1<<3);
@@ -123,4 +98,4 @@ void Eint4567_ISR(void)
 	rEXTINTPND = 1<<2 | 1<<3;
 	// borra el bit pendiente en INTPND
 	rI_ISPC = 1<<21;
-}*/
+}
