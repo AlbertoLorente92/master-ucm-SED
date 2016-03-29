@@ -31,7 +31,7 @@ void Eint4567_init(int* dir)
 	pISR_EINT4567 = (unsigned) Eint4567_ISR;
 /* Configuracion del puerto G */
 	// Establece la funcion de los pines (EINT7-EINT0)
-	rPCONG &= ~(1<<12 & 1<<13 & 1<<14 & 1<<15);
+	rPCONG |= (1<<12 | 1<<13 | 1<<14 | 1<<15);
 	//Habilita las resistencias de pull-up
 	rPUPG = 0;
 	// Configura las lineas de int. como de flanco de bajada mediante EXTINT
