@@ -1,8 +1,6 @@
 /*--- ficheros de cabecera ---*/
-#include "common_types.h"
 #include "44b.h"
 #include "def.h"
-#include "at24c04.h"
 #include "uart.h"
 /*--- variables globales ---*/
 
@@ -11,17 +9,8 @@
 /*--- declaracion de funciones ---*/
 void Eint4567_ISR(void) __attribute__ ((interrupt ("IRQ")));
 void Eint4567_init();
-extern void leds_off();
-extern void led1_on();
-extern void led2_on();
-extern void D8Led_symbol(int value);
+extern void DelayMs(int);
 /*--- Variables globales ---*/
-
-extern int estado;
-extern int control;
-extern uint16 dir;
-extern uint8 dato;
-uint16 lastDir = 0;
 
 /*--- codigo de funciones ---*/
 void Eint4567_init()
@@ -57,14 +46,14 @@ int which_int;
 void Eint4567_ISR(void)
 {
 	which_int = rEXTINTPND & (1<<2 | 1<<3);
-	char left[1] = "a";
-	char right[1] = "b";
+	//char left[1] = "a";
+	//char right[1] = "b";
 	switch (which_int) {
 		case 1<<2:
-			Uart_SendByte(left);
+			//Uart_SendByte(*left);
 			break;
 		case 1<<3:
-			Uart_SendByte(pt_str);
+			//Uart_SendByte(*right);
 			break;
 		default:
 			break;

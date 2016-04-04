@@ -38,14 +38,14 @@ void Uart_Config(void)
 
 inline void Uart_TxEmpty(void)
 {
-    while (!(rUTRSTAT1 & 0x4)); 	     // esperar a que el shifter de TX se vacie
+    while (!(rUTRSTAT0 & 0x4)); 	     // esperar a que el shifter de TX se vacie
 }
 
 
 char Uart_Getch(void)
 {
-    while (!(rUTRSTAT1 & 0x1));        // esperar a que el buffer contenga datos
-	return RdURXH1();		   		   // devolver el caracter
+    while (!(rUTRSTAT0 & 0x1));        // esperar a que el buffer contenga datos
+	return RdURXH0();		   		   // devolver el caracter
 }
 
 void Uart_SendByte(int data)
@@ -54,11 +54,11 @@ void Uart_SendByte(int data)
 
     if(data == '\n')		
 	{
-	   while (!(rUTRSTAT1 & 0x2));     // esperar a que THR se vacie
-	   WrUTXH1('\r');			       // escribir retorno de carro (utilizar macro)
+	   while (!(rUTRSTAT0 & 0x2));     // esperar a que THR se vacie
+	   WrUTXH0('\r');			       // escribir retorno de carro (utilizar macro)
 	}
-	while (!(rUTRSTAT1 & 0x2)); 	   // esperar a que THR se vacie
-	WrUTXH1(data);				       // escribir data (utilizar macro)
+	while (!(rUTRSTAT0 & 0x2)); 	   // esperar a que THR se vacie
+	WrUTXH0(data);				       // escribir data (utilizar macro)
 }
 
 void Uart_SendString(char *pt)
@@ -77,3 +77,6 @@ void Uart_Printf(char *fmt,...)
     Uart_SendString(string);
     va_end(ap);
 }
+
+
+
