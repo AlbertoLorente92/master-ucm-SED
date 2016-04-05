@@ -9,12 +9,16 @@ extern void leds_off();
 extern void led1_on();
 extern void led2_on();
 extern void Eint4567_init();
+extern void keyboard_init();
+extern void D8Led_init(void);
 
 char str[1];
 
 int Main(void){
 	sys_init(); // inicializacion de la placa, interrupciones, puertos
 	Uart_Init(115200); // inicializacion de la Uart
+	keyboard_init();
+	D8Led_init();
 	Eint4567_init();
 
 	char *pt_str = str;

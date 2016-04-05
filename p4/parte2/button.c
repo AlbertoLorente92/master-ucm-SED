@@ -46,14 +46,14 @@ int which_int;
 void Eint4567_ISR(void)
 {
 	which_int = rEXTINTPND & (1<<2 | 1<<3);
-	//char left[1] = "a";
-	//char right[1] = "b";
+	char left[1] = "a";
+	char right[1] = "b";
 	switch (which_int) {
 		case 1<<2:
-			//Uart_SendByte(*left);
+			Uart_SendByte(*left);
 			break;
 		case 1<<3:
-			//Uart_SendByte(*right);
+			Uart_SendByte(*right);
 			break;
 		default:
 			break;
