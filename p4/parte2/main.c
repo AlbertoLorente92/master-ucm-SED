@@ -11,6 +11,7 @@ extern void led2_on();
 extern void Eint4567_init();
 extern void keyboard_init();
 extern void D8Led_init(void);
+extern void D8Led_symbol(int value);
 
 char str[1];
 
@@ -19,6 +20,7 @@ int Main(void){
 	Uart_Init(115200); // inicializacion de la Uart
 	keyboard_init();
 	D8Led_init();
+	D8Led_symbol(4);
 	Eint4567_init();
 
 	char *pt_str = str;
@@ -32,8 +34,10 @@ int Main(void){
 			leds_off();
 			led2_on();
 		}
+		if (((*pt_str-'0') >= 0) && ((*pt_str-'0') < 16)){
+			D8Led_symbol(*pt_str-'0');
+		}
 		pt_str = str;
 	}
-
 	return 0;
 }

@@ -51,7 +51,6 @@ void KeyboardInt(void)
 	if(key > -1)
 	{
 		Uart_SendByte(key);
-		//D8Led_symbol(key);
 	}
 	/* Esperar a se libere la tecla: consultar bit 1 del registro de datos del puerto G */
 	while ((rPDATG & (1<<1)) == 0 ){
@@ -112,6 +111,6 @@ int key_read()
 	* ESCRIBIR EL CÓDIGO CORRESPONDIENTE A LAS OTRAS FILAS Y COLUMNAS
 	*/
 
-	return value;
+	return value+'0';
 
 }
