@@ -50,7 +50,7 @@ void KeyboardInt(void)
 	/* Si la tecla se ha identificado, visualizarla en el 8SEG*/
 	if(key > -1)
 	{
-		Uart_SendByte(key);
+		Uart0_SendByte(key);
 	}
 	/* Esperar a se libere la tecla: consultar bit 1 del registro de datos del puerto G */
 	while ((rPDATG & (1<<1)) == 0 ){

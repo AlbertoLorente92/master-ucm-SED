@@ -12,6 +12,7 @@
 #include <stdio.h>
 
 void Uart0Rx_ISR(void) __attribute__ ((interrupt ("IRQ")));
+void Uart1Rx_ISR(void) __attribute__ ((interrupt ("IRQ")));
 
 /*--- implementación de las funciones ---*/
 void Uart_Init(int baud)
@@ -45,9 +46,10 @@ void Uart_Config(void)
 	rINTCON &= ~(0x1<<1 | 0x1<<2);
 	rINTCON |= 0x1<<0;
 	// Enmascara todas las lineas excepto Eint4567 y el bit global (INTMSK)
-	rINTMSK &= ~((1<<7) | (1<<26)); // Habiltar las lineas 21(Eint4567) y 26(bit global)
+	rINTMSK &= ~((1<<7) | (1<<6) | (1<<26)); // Habiltar las lineas 21(Eint4567) y 26(bit global)
 	// Establecer la rutina de servicio para Eint4567
 	pISR_URXD0 = (unsigned) Uart0Rx_ISR;
+	pISR_URXD1 = (unsigned) Uart1Rx_ISR;
 /* Configuracion del puerto G */
 	// Establece la funcion de los pines (EINT7-EINT0)
 	//rPCONG |= (1<<12 | 1<<13 | 1<<14 | 1<<15);
@@ -57,62 +59,94 @@ void Uart_Config(void)
 	rEXTINT &= ~(1<<30 | 1<<26);
 	rEXTINT |= 1<<29 | 1<<25;
 /* Por precaucion, se vuelven a borrar los bits de INTPND y EXTINTPND */
-	rEXTINTPND = ~0x0;
+	RdURXH0();
+	RdURXH1();
 	rI_ISPC = ~0x0;
 }
 
-inline void Uart_TxEmpty(void)
-{
-    while (!(rUTRSTAT1 & 0x4)); 	     // esperar a que el shifter de TX se vacie
-}
 
-void Uart0Rx_ISR(void)
-{
+void Uart0Rx_ISR(void){
 	 char str[1];
 	 char *pt_str = str;
 
-	 *pt_str = Uart_Getch();
+	 *pt_str = Uart0_Getch();
+
+	if (*pt_str == 'a'){
+		leds_off();
+		led1_on();
+	}
+	if (*pt_str == 'b'){
+		leds_off();
+		led2_on();
+	}
 
 	// borra el bit pendiente en INTPND
-	rI_ISPC = 1<<7;
-}
+	rI_ISPC = 1<<7;}
 
+void Uart1Rx_ISR(void){
+	 char str[1];
+	 char *pt_str = str;
 
-char Uart_Getch(void)
-{
+	 *pt_str = Uart0_Getch();
+
+	// borra el bit pendiente en INTPND
+	rI_ISPC = 1<<6;}
+
+inline void Uart0_TxEmpty(void){
+    while (!(rUTRSTAT0 & 0x4));} 	     // esperar a que el shifter de TX se vacie
+
+inline void Uart1_TxEmpty(void){
+    while (!(rUTRSTAT1 & 0x4));} 	     // esperar a que el shifter de TX se vacie
+
+char Uart0_Getch(void){
     while (!(rUTRSTAT0 & 0x1));        // esperar a que el buffer contenga datos
-	return RdURXH0();		   		   // devolver el caracter
-}
+	return RdURXH0();}		   		   // devolver el caracter
 
-void Uart_SendByte(int data)
-{
+char Uart1_Getch(void){
+    while (!(rUTRSTAT1 & 0x1));        // esperar a que el buffer contenga datos
+	return RdURXH1();}		   		   // devolver el caracter
+
+void Uart0_SendByte(int data){
     char localBuf[2] = {'\0','\0'};
-
-    if(data == '\n')		
-	{
+    if(data == '\n'){
 	   while (!(rUTRSTAT0 & 0x2));     // esperar a que THR se vacie
-	   WrUTXH0('\r');			       // escribir retorno de carro (utilizar macro)
-	}
+	   WrUTXH0('\r');}			       // escribir retorno de carro (utilizar macro)
 	while (!(rUTRSTAT0 & 0x2)); 	   // esperar a que THR se vacie
-	WrUTXH0(data);				       // escribir data (utilizar macro)
-}
+	WrUTXH0(data);}				       // escribir data (utilizar macro)
 
-void Uart_SendString(char *pt)
-{
+void Uart1_SendByte(int data){
+    char localBuf[2] = {'\0','\0'};
+    if(data == '\n'){
+	   while (!(rUTRSTAT1 & 0x2));     // esperar a que THR se vacie
+	   WrUTXH1('\r');}			       // escribir retorno de carro (utilizar macro)
+	while (!(rUTRSTAT1 & 0x2)); 	   // esperar a que THR se vacie
+	WrUTXH1(data);}				       // escribir data (utilizar macro)
+
+void Uart0_SendString(char *pt){
     while (*pt)						    // mandar byte a byte hasta completar string
-	Uart_SendByte(*pt++);
-}
+	Uart0_SendByte(*pt++);}
 
-void Uart_Printf(char *fmt,...)
-{
+void Uart1_SendString(char *pt){
+    while (*pt)						    // mandar byte a byte hasta completar string
+	Uart1_SendByte(*pt++);}
+
+void Uart0_Printf(char *fmt,...){
     va_list ap;
     char string[256];
 
     va_start(ap,fmt);
     vsprintf(string,fmt,ap);
-    Uart_SendString(string);
-    va_end(ap);
-}
+    Uart0_SendString(string);
+    va_end(ap);}
+
+void Uart1_Printf(char *fmt,...){
+    va_list ap;
+    char string[256];
+
+    va_start(ap,fmt);
+    vsprintf(string,fmt,ap);
+    Uart1_SendString(string);
+    va_end(ap);}
 
 
 

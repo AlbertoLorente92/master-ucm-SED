@@ -50,10 +50,10 @@ void Eint4567_ISR(void)
 	char right[1] = "b";
 	switch (which_int) {
 		case 1<<2:
-			Uart_SendByte(*left);
+			Uart0_SendByte(*left);
 			break;
 		case 1<<3:
-			Uart_SendByte(*right);
+			Uart0_SendByte(*right);
 			break;
 		default:
 			break;

@@ -19,11 +19,18 @@ extern "C" {
 /*--- prototipos de funciones ---*/
 void Uart_Init(int baud);
 void Uart_Config(void);
-void Uart_TxEmpty(void);
-char Uart_Getch(void);
-void Uart_SendByte(int data);
-void Uart_SendString(char *pt);
-void Uart_Printf(char *fmt,...);
+
+void Uart0_TxEmpty(void);
+char Uart0_Getch(void);
+void Uart0_SendByte(int data);
+void Uart0_SendString(char *pt);
+void Uart0_Printf(char *fmt,...);
+
+void Uart1_TxEmpty(void);
+char Uart1_Getch(void);
+void Uart1_SendByte(int data);
+void Uart1_SendString(char *pt);
+void Uart1_Printf(char *fmt,...);
 
 #ifdef __cplusplus
 }
