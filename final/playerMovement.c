@@ -2,6 +2,9 @@
 
 extern int map16x16[];
 
+
+int oldPlayerPosX = -1;
+int oldPlayerPosY = -1;
 int playerPosX = -1;
 int playerPosY = -1;
 
@@ -13,6 +16,8 @@ void initPlayerPosition16x16(void){
 		if(map16x16[j*(320/16) + i] == NoNe){
 			playerPosX = i*16;
 			playerPosY = j*16;
+			oldPlayerPosY = playerPosY;
+			oldPlayerPosX = playerPosX;
 			break;
 		}
 	}
@@ -48,32 +53,44 @@ int isValidPosition(int x, int y){
 /* Dado a los obstaculos que rodean al mapa no es necesario preocuparnos de salir del mapa.*/
 void movePlayerUp(void){
 	if(isValidPosition(playerPosX, playerPosY -1)){
-		clearPlayer16x16();
+		oldPlayerPosY = playerPosY;
+		oldPlayerPosX = playerPosX;
 		playerPosY -= 1;
-		drawPlayer16x16();
+		redrawChanging();
+		oldPlayerPosY = playerPosY;
+		oldPlayerPosX = playerPosX;
 	}
 }
 
 void movePlayerDown(void){
 	if(isValidPosition(playerPosX, playerPosY +1)){
-		clearPlayer16x16();
+		oldPlayerPosY = playerPosY;
+		oldPlayerPosX = playerPosX;
 		playerPosY += 1;
-		drawPlayer16x16();
+		redrawChanging();
+		oldPlayerPosY = playerPosY;
+		oldPlayerPosX = playerPosX;
 	}
 }
 
 void movePlayerLeft(void){
 	if(isValidPosition(playerPosX -1, playerPosY)){
-		clearPlayer16x16();
+		oldPlayerPosY = playerPosY;
+		oldPlayerPosX = playerPosX;
 		playerPosX -= 1;
-		drawPlayer16x16();
+		redrawChanging();
+		oldPlayerPosY = playerPosY;
+		oldPlayerPosX = playerPosX;
 	}
 }
 
 void movePlayerRight(void){
 	if(isValidPosition(playerPosX +1, playerPosY)){
-		clearPlayer16x16();
+		oldPlayerPosY = playerPosY;
+		oldPlayerPosX = playerPosX;
 		playerPosX += 1;
-		drawPlayer16x16();
+		redrawChanging();
+		oldPlayerPosY = playerPosY;
+		oldPlayerPosX = playerPosX;
 	}
 }

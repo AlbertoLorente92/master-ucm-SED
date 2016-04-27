@@ -2,17 +2,14 @@
 #include "44b.h"
 #include "def.h"
 #include "uart.h"
-/*--- variables globales ---*/
+#include "bombLogic.h"
 
-/*--- funciones externas ---*/
-//extern void D8Led_Symbol(int value);
-/*--- declaracion de funciones ---*/
+extern int playerPosX;
+extern int playerPosY;
+
 void Eint4567_ISR(void) __attribute__ ((interrupt ("IRQ")));
 void Eint4567_init();
-extern void DelayMs(int);
-/*--- Variables globales ---*/
 
-/*--- codigo de funciones ---*/
 void Eint4567_init()
 {
 /* Configuracion del controlador de interrupciones */
@@ -46,22 +43,10 @@ int which_int;
 void Eint4567_ISR(void)
 {
 	which_int = rEXTINTPND & (1<<2 | 1<<3);
-	char left[1] = "a";
-	char right[1] = "b";
-	switch (which_int) {
-		case 1<<2:
-			Uart0_SendByte(*left);
-			break;
-		case 1<<3:
-			Uart0_SendByte(*right);
-			break;
-		default:
-			break;
-	}
+
+	setBomb(playerPosX, playerPosY);
 
 	DelayMs(100);
-	// borra los bits en EXTINTPND  
 	rEXTINTPND = 1<<2 | 1<<3;
-	// borra el bit pendiente en INTPND
 	rI_ISPC = 1<<21;
 }

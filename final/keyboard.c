@@ -14,7 +14,6 @@ int key;
 /*--- Declaracion de funciones ---*/
 void keyboard_init();
 int key_read();
-void KeyboardInt(void) __attribute__ ((interrupt ("IRQ")));
 /*--- Codigo de las funciones ---*/
 void keyboard_init()
 {
@@ -23,51 +22,8 @@ void keyboard_init()
 	rPCONG |= (1<<2 | 1<<3);
 		// Habilita el "pull up" del puerto
 	rPUPG = 0;
-		// Configura las lineas de int. como de flanco de bajada mediante EXTINT
-	rEXTINT &= ~(1<<6);
-	rEXTINT |= 1<<5;
-	/* Establece la rutina de servicio para EINT1 */
-	pISR_EINT1 = (unsigned) KeyboardInt;
-		//
-	/* Configurar controlador de interrupciones */
-		// Borra INTPND escribiendo 1s en I_ISPC
-	rI_ISPC = ~0x0;
-		// Configura las lineas como de tipo IRQ mediante INTMOD
-	rINTMOD = 0x0;
-		// Habilita int. vectorizadas y la linea IRQ (FIQ no) mediante INTCON
-	rINTCON &= ~(0x1<<1 | 0x1<<2);
-	rINTCON |= 0x1<<0;
-	/* Habilitar linea EINT1 */
-	//rINTMSK |= (~(unsigned int)0)>>5; // Enmascarar todas las lineas, bits [0..26].
-	rINTMSK &= ~((1<<24) | (1<<26)); // Habiltar las lineas 24(Eint1) y 26(bit global)
-	/* Por precaucion, se vuelven a borrar los bits de INTPND correspondientes*/
-	rI_ISPC = ~0x0;
 }
-void KeyboardInt(void)
-{
-	/* Esperar trp mediante la funcion DelayMs()*/
-	DelayMs(20);
-	/* Identificar la tecla */
-	key = key_read();
 
-	if (key == 1)
-		movePlayerUp();
-	if (key == 4)
-		movePlayerLeft();
-	if (key == 5)
-		movePlayerDown();
-	if (key == 6)
-		movePlayerRight();
-
-	/* Esperar a se libere la tecla: consultar bit 1 del registro de datos del puerto G */
-	while ((rPDATG & (1<<1)) == 0 ){
-		//NOTHING
-	}
-	/* Esperar trd mediante la funcion Delay() */
-	DelayMs(100);
-	/* Borrar interrupción de teclado */
-	rI_ISPC = 1<<24;
-}
 int key_read()
 {
 	int value= -1;

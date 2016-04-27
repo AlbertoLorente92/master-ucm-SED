@@ -6,6 +6,8 @@
 #include "playerMovement.h"
 
 extern void keyboard_init();
+extern void timer_init();
+extern void Eint4567_init();
 
 
 /*--- declaracion de funciones ---*/
@@ -15,6 +17,8 @@ int Main(void){
 	sys_init(); // inicializacion de la placa, interrupciones, puertos
 	//Uart_Init(115200); // inicializacion de la Uart
 	keyboard_init();
+	timer_init();
+	Eint4567_init();
 
 	init_visualizacion();
 	generateDirt16x16();

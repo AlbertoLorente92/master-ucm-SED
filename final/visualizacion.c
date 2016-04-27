@@ -18,8 +18,14 @@ int map16x16[(320/16) * (240/16)] = {
 	Wall, Wall, Wall, Wall, Wall, Wall, Wall, Wall, Wall, Wall, Wall, Wall, Wall, Wall, Wall, Wall, Wall, Wall, Wall, Wall,
 };
 
+extern int oldPlayerPosX;
+extern int oldPlayerPosY;
 extern int playerPosX;
 extern int playerPosY;
+
+extern int bombPosX;
+extern int bombPosY;
+
 
 void init_visualizacion(void){
 	lcd_init();
@@ -73,6 +79,7 @@ void generateDirt16x16(void){
 	}
 }
 
+// TODO Que acepte parametros, como drawBimb16x16
 void drawPlayer16x16(void){
 	// TODO
 	int i;
@@ -81,9 +88,36 @@ void drawPlayer16x16(void){
 	}
 }
 
-void clearPlayer16x16(void){
+// TODO eliminar este y utilizar clear16x16.
+void clearPlayer16x16(void){ // Que acepte parametros
 	int i;
 	for (i = 0; i<16; i++){
 		lcd_putpixel(playerPosX+i, playerPosY+i, WHITE);
 	}
+}
+
+void clear16x16(posX, posY){
+	int i, j;
+		for (i = 0; i<16; i++)
+			for (j = 0; j<16; j++)
+				lcd_putpixel(posX+i, posY+j, WHITE);
+}
+
+void drawBomb16x16(int posX, int posY){
+	int i, j;
+		for (i = 0; i<16; i++)
+			for (j = 0; j<16; j+=2)
+				lcd_putpixel(posX+i, posY+j, BLACK);
+}
+
+void redrawChanging(){
+	//Clear
+	clear16x16(oldPlayerPosX, oldPlayerPosY);
+	if (bombPosX != -1 || bombPosY != -1)
+		clear16x16(bombPosX, bombPosY);
+
+	//Draw
+	drawPlayer16x16();
+	if (bombPosX != -1 || bombPosY != -1)
+		drawBomb16x16(bombPosX, bombPosX);
 }
