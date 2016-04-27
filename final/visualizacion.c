@@ -119,5 +119,5 @@ void redrawChanging(){
 	//Draw
 	drawPlayer16x16();
 	if (bombPosX != -1 || bombPosY != -1)
-		drawBomb16x16(bombPosX, bombPosX);
+		drawBomb16x16(bombPosX, bombPosY);
 }

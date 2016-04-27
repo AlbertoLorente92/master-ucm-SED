@@ -29,7 +29,7 @@ void timer_init(){
 
 	//Configurar Timer [0..2]
 	//Configurar prescales's 0 y 1
-	rTCFG0 = 0xFFFF;
+	rTCFG0 = 0xFF80;
 	//Limiar divisores [0..2]
 	rTCFG1 &= ~((unsigned int)0x0)<<12;
 	//Fijar divisor 0
@@ -71,5 +71,11 @@ void timer_ISR(void){
 
 		D8Led_symbol(aux);
 	}
+
+
+	if ( ((rI_ISPR & BIT_TIMER1)!=0)){
+		boomBomb();
+	}
+
 	rI_ISPC = BIT_TIMER0 | BIT_TIMER1 | BIT_TIMER2 ;
 }
