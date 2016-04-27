@@ -4,7 +4,6 @@
 
 extern const uint8 font;
 
-static uint8 status_lcd;
 static uint8 buffer[320*240/2];
 void lcd_init( void ){
 	rLCDCON1 	= 0x1C021;//
