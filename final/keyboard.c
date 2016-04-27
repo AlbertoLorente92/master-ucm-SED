@@ -3,6 +3,8 @@
 #include "44blib.h"
 #include "def.h"
 #include "uart.h"
+#include "playerMovement.h"
+
 /*--- Definición de macros ---*/
 #define KEY_VALUE_MASK 0xF
 /*--- Variables globales ---*/
@@ -36,7 +38,7 @@ void keyboard_init()
 	rINTCON &= ~(0x1<<1 | 0x1<<2);
 	rINTCON |= 0x1<<0;
 	/* Habilitar linea EINT1 */
-	rINTMSK |= (~(unsigned int)0)>>5; // Enmascarar todas las lineas, bits [0..26].
+	//rINTMSK |= (~(unsigned int)0)>>5; // Enmascarar todas las lineas, bits [0..26].
 	rINTMSK &= ~((1<<24) | (1<<26)); // Habiltar las lineas 24(Eint1) y 26(bit global)
 	/* Por precaucion, se vuelven a borrar los bits de INTPND correspondientes*/
 	rI_ISPC = ~0x0;
@@ -47,11 +49,16 @@ void KeyboardInt(void)
 	DelayMs(20);
 	/* Identificar la tecla */
 	key = key_read();
-	/* Si la tecla se ha identificado, visualizarla en el 8SEG*/
-	if(key > -1)
-	{
-		Uart0_SendByte(key);
-	}
+
+	if (key == 1)
+		movePlayerUp();
+	if (key == 4)
+		movePlayerLeft();
+	if (key == 5)
+		movePlayerDown();
+	if (key == 6)
+		movePlayerRight();
+
 	/* Esperar a se libere la tecla: consultar bit 1 del registro de datos del puerto G */
 	while ((rPDATG & (1<<1)) == 0 ){
 		//NOTHING
@@ -106,11 +113,11 @@ int key_read()
 		case 0xD:  value = 14; break;
 		case 0xE:  value = 15; break;
 	}
-	
+
 	/*
 	* ESCRIBIR EL CÓDIGO CORRESPONDIENTE A LAS OTRAS FILAS Y COLUMNAS
 	*/
 
-	return value+'0';
+	return value;
 
 }
