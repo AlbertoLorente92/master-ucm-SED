@@ -9,6 +9,7 @@ extern int playerPosY;
 
 void Eint4567_ISR(void) __attribute__ ((interrupt ("IRQ")));
 void Eint4567_init();
+void DelayMs(int time);
 
 void Eint4567_init()
 {

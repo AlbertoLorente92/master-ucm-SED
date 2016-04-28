@@ -12,18 +12,19 @@ void setBomb(int posX, int posY){
 	bombPosX = ((posX + 16/2) /16)*16;
 	bombPosY = ((posY + 16/2) /16)*16;
 
-	//rTCON |= 0x1<<12;
+	rTCON |= (0x1<<13);
+	rTCON &= ~(0x1<<13);
+	rTCON |= (0x1<<15);
+	rTCON |= 0x1<<12;
 
 	redrawChanging();
 }
 
 void boomBomb(void){
-	if (bombPosX != -1 || bombPosY != -1)
+	if (bombPosX == -1 && bombPosY == -1)
 			return;
-
 	clear16x16(bombPosX, bombPosY);
-	redrawChanging();
-
 	bombPosX = -1;
 	bombPosY = -1;
+	redrawChanging();
 }

@@ -2,6 +2,7 @@
 #include "44b.h"
 #include "44blib.h"
 #include "playerMovement.h"
+#include "bombLogic.h"
 
 /*--- funciones externas ---*/
 extern void D8Led_symbol(int value);
@@ -29,7 +30,7 @@ void timer_init(){
 
 	//Configurar Timer [0..2]
 	//Configurar prescales's 0 y 1
-	rTCFG0 = 0xFF80;
+	rTCFG0 = 0xFF40;
 	//Limiar divisores [0..2]
 	rTCFG1 &= ~((unsigned int)0x0)<<12;
 	//Fijar divisor 0
@@ -46,6 +47,7 @@ void timer_init(){
 	rTCMPB1=12800;
 	rTCMPB2=12800;
 	
+	/*
 	//Establecer manual updates
 	rTCON |= (0x1<<1 | 0x1<<9 | 0x1<<13);
 	//Desactivar manual updates
@@ -54,6 +56,12 @@ void timer_init(){
 	rTCON |= (0x1<<3 | 0x1<<11 | 0x1<<15);
 	//Iniciar timer
 	rTCON |= (0x1<<0 | 0x1<<8 | 0x1<<12);
+	*/
+
+	rTCON |= (0x1<<1);
+	rTCON &= ~(0x1<<1);
+	rTCON |= (0x1<<3);
+	rTCON |= (0x1<<0);
 }
 
 void timer_ISR(void){
@@ -70,12 +78,16 @@ void timer_ISR(void){
 			movePlayerRight();
 
 		D8Led_symbol(aux);
+
+		rI_ISPC = BIT_TIMER0;
 	}
 
 
-	if ( ((rI_ISPR & BIT_TIMER1)!=0)){
+	if ( ((rI_ISPR & BIT_TIMER2)!=0)){
+		rTCON |= (0x1<<12);
 		boomBomb();
+		rI_ISPC = BIT_TIMER2;
 	}
 
-	rI_ISPC = BIT_TIMER0 | BIT_TIMER1 | BIT_TIMER2 ;
+	rI_ISPC = BIT_TIMER1;
 }
