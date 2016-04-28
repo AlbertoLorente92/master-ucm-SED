@@ -201,7 +201,7 @@ BDRAMTYPE:	.string		"SDRAM"
     .text
 
     ENTRY:
-    b ResetHandler			/* for debug            */
+     b ResetHandler			/* for debug            */
     b HandlerUndef      	/* handlerUndef         */
     b HandlerSWI        	/* SWI interrupt handler*/
     b HandlerPabort     	/* handlerPAbort        */

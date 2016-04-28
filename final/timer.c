@@ -84,7 +84,7 @@ void timer_ISR(void){
 
 
 	if ( ((rI_ISPR & BIT_TIMER2)!=0)){
-		rTCON |= (0x1<<12);
+		rTCON &= ~(0x1<<12);
 		boomBomb();
 		rI_ISPC = BIT_TIMER2;
 	}

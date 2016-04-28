@@ -14,6 +14,7 @@ void init_visualizacion(void);
 void drawMap16x16(void);
 void drawWall16x16(int x, int y);
 void drawDirt16x16(int x, int y);
+void drawExit16x16(int x,int y);
 void generateDirt16x16(void);
 void drawPlayer16x16(void);
 void clearPlayer16x16(void);

@@ -1,6 +1,8 @@
 #include "playerMovement.h"
 
 extern int map16x16[];
+extern int exitPosX;
+extern int exitPosY;
 
 
 int oldPlayerPosX = -1;
@@ -23,10 +25,22 @@ void initPlayerPosition16x16(void){
 	}
 }
 
+void checkWinGame(){
+	int playerTopLeftX = playerPosX/16;
+	int playerTopLeftY = playerPosY/16;
+	int playerBotRigthX = (playerPosX+15)/16;
+	int playerBotRigthY = (playerPosY+15)/16;
+
+	if((exitPosX==playerTopLeftX && exitPosY==playerTopLeftY) || (exitPosX==playerBotRigthX && exitPosY==playerBotRigthY)){
+		gameWin();
+	}
+
+}
+
 int isValidPosition(int x, int y){
 	int i, j;
 	//Top, Left.
-	i = x /16;	j = y / (240/16);
+	i = x /16;	j = y /16;
 	if(map16x16[j*(320/16) + i] != NoNe)
 		return 0;
 
@@ -59,6 +73,7 @@ void movePlayerUp(void){
 		redrawChanging();
 		oldPlayerPosY = playerPosY;
 		oldPlayerPosX = playerPosX;
+		checkWinGame();
 	}
 }
 
@@ -70,6 +85,7 @@ void movePlayerDown(void){
 		redrawChanging();
 		oldPlayerPosY = playerPosY;
 		oldPlayerPosX = playerPosX;
+		checkWinGame();
 	}
 }
 
@@ -81,6 +97,7 @@ void movePlayerLeft(void){
 		redrawChanging();
 		oldPlayerPosY = playerPosY;
 		oldPlayerPosX = playerPosX;
+		checkWinGame();
 	}
 }
 
@@ -92,5 +109,6 @@ void movePlayerRight(void){
 		redrawChanging();
 		oldPlayerPosY = playerPosY;
 		oldPlayerPosX = playerPosX;
+		checkWinGame();
 	}
 }

@@ -8,6 +8,8 @@
 extern void keyboard_init();
 extern void timer_init();
 extern void Eint4567_init();
+extern void initExitPosition16x16(void);
+
 
 
 /*--- declaracion de funciones ---*/
@@ -22,6 +24,7 @@ int Main(void){
 
 	init_visualizacion();
 	generateDirt16x16();
+	initExitPosition16x16();
 	drawMap16x16();
 
 	initPlayerPosition16x16();
