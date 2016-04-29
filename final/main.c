@@ -17,7 +17,7 @@ int Main(void);
 
 int Main(void){
 	sys_init(); // inicializacion de la placa, interrupciones, puertos
-	//Uart_Init(115200); // inicializacion de la Uart
+	Uart_Init(115200); // inicializacion de la Uart
 	keyboard_init();
 	timer_init();
 	Eint4567_init();

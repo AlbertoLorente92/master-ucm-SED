@@ -8,11 +8,17 @@
 /*--- ficheros de cabecera ---*/
 #include "44b.h"
 #include "uart.h"
+#include "visualizacion.h"
 #include <stdarg.h>
 #include <stdio.h>
 
 void Uart0Rx_ISR(void) __attribute__ ((interrupt ("IRQ")));
 void Uart1Rx_ISR(void) __attribute__ ((interrupt ("IRQ")));
+
+int state = 0;
+int fpPosX;
+int fpPosY;
+int fpSprite;
 
 /*--- implementación de las funciones ---*/
 void Uart_Init(int baud)
@@ -65,23 +71,56 @@ void Uart_Config(void)
 }
 
 
+// TODO Documentar estados
+// 0 Esperando commandos.
+// 1 Friend player posX.
+// 2 Friend player posY.
+
 void Uart0Rx_ISR(void){
-	 char str[1];
-	 char *pt_str = str;
+	char str[1];
+	char *pt_str = str;
+	*pt_str = Uart0_Getch();
 
-	 *pt_str = Uart0_Getch();
-
-	if (*pt_str == 'a'){
-		leds_off();
-		led1_on();
+	if ((*pt_str & 0x80) != 0){
+		state = 0;
 	}
-	if (*pt_str == 'b'){
-		leds_off();
-		led2_on();
+
+	if ((state == 0) && ((*pt_str & 0x80) != 0)){
+		if((*pt_str & 0x60) == 0x00){
+			fpPosX = 0;
+			fpPosX |= (*pt_str & 0x18)<<4;
+			fpPosY = 0;
+			fpPosY |= (*pt_str & 0x04)<<5;
+			fpSprite = (*pt_str & 0x03);
+			state = 1;
+
+			rI_ISPC = 1<<7;
+			return;
+		}
+		// TODO other commands
+	}
+
+	if (state == 1){
+		fpPosX |= *pt_str;
+		state = 2;
+
+		rI_ISPC = 1<<7;
+		return;
+	}
+
+	if (state == 2){
+		fpPosY |= *pt_str;
+		state = 0;
+
+		drawPlayerF16x16(fpPosX, fpPosY, fpSprite);
+
+		rI_ISPC = 1<<7;
+		return;
 	}
 
 	// borra el bit pendiente en INTPND
-	rI_ISPC = 1<<7;}
+	rI_ISPC = 1<<7;
+}
 
 void Uart1Rx_ISR(void){
 	 char str[1];
@@ -137,7 +176,8 @@ void Uart0_Printf(char *fmt,...){
     va_start(ap,fmt);
     vsprintf(string,fmt,ap);
     Uart0_SendString(string);
-    va_end(ap);}
+    va_end(ap);
+}
 
 void Uart1_Printf(char *fmt,...){
     va_list ap;

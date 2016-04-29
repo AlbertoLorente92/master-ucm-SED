@@ -17,6 +17,7 @@ void drawDirt16x16(int x, int y);
 void drawExit16x16(int x,int y);
 void generateDirt16x16(void);
 void drawPlayer16x16(void);
+void drawPlayerF16x16(int posX, int posY, int aux);
 void clearPlayer16x16(void);
 void clear16x16(int posX, int posY);
 void drawBomb16x16(int posX, int posY);

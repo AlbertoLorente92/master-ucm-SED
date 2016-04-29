@@ -275,7 +275,6 @@ void generateDirt16x16(void){
 
 // TODO Que acepte parametros, como drawBimb16x16
 void drawPlayer16x16(void){
-	// TODO
 	int i,j;
 	for (i = 0; i<16; i++){
 		for (j = 0; j<16; j++){
@@ -288,6 +287,17 @@ void drawPlayer16x16(void){
 	contSp = (contSp +1)%4;
 }
 
+void drawPlayerF16x16(int posX, int posY, int aux){
+	int i,j;
+	for (i = 0; i<16; i++){
+		for (j = 0; j<16; j++){
+			if(spFrontal[aux].sprite[(j*16)+i] != 0b0000){
+				lcd_putpixel(posX+i, posY+j, spFrontal[aux].sprite[(j*16)+i] );
+			}
+		}
+	}
+}
+
 // TODO eliminar este y utilizar clear16x16.
 void clearPlayer16x16(void){ // Que acepte parametros
 	int i;
@@ -296,7 +306,7 @@ void clearPlayer16x16(void){ // Que acepte parametros
 	}
 }
 
-void clear16x16(posX, posY){
+void clear16x16(int posX, int posY){
 	int i, j;
 		for (i = 0; i<16; i++)
 			for (j = 0; j<16; j++)
