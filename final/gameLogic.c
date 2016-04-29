@@ -18,7 +18,7 @@ void initExitPosition16x16(void){
 	}
 	//TODO remove this shit
 	exitPosX=10;
-	exitPosY=9;
+	exitPosY=5;
 }
 
 void gameOver(void){
