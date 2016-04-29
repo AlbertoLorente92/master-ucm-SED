@@ -18,7 +18,12 @@ void Uart1Rx_ISR(void) __attribute__ ((interrupt ("IRQ")));
 int state = 0;
 int fpPosX;
 int fpPosY;
-int fpSprite;
+extern int fpSprite;
+
+extern int foldPlayerPosX;
+extern int foldPlayerPosY;
+extern int fplayerPosX;
+extern int fplayerPosY;
 
 /*--- implementación de las funciones ---*/
 void Uart_Init(int baud)
@@ -112,7 +117,13 @@ void Uart0Rx_ISR(void){
 		fpPosY |= *pt_str;
 		state = 0;
 
-		drawPlayerF16x16(fpPosX, fpPosY, fpSprite);
+		foldPlayerPosX = fplayerPosX;
+		foldPlayerPosY = fplayerPosY;
+		fplayerPosX = fpPosX;
+		fplayerPosY = fpPosY;
+
+		// TODO decidir si dejar esto o no.
+		//redrawChanging();
 
 		rI_ISPC = 1<<7;
 		return;

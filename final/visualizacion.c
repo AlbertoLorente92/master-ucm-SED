@@ -85,6 +85,12 @@ extern int oldPlayerPosY;
 extern int playerPosX;
 extern int playerPosY;
 
+int foldPlayerPosX = 0;
+int foldPlayerPosY = 0;
+int fplayerPosX = 0;
+int fplayerPosY = 0;
+int fpSprite = 0;
+
 extern int bombPosX;
 extern int bombPosY;
 
@@ -327,11 +333,13 @@ void drawBomb16x16(int posX, int posY){
 void redrawChanging(){
 	//Clear
 	clear16x16(oldPlayerPosX, oldPlayerPosY);
+	clear16x16(foldPlayerPosX, foldPlayerPosY);
 	if (bombPosX != -1 || bombPosY != -1)
 		clear16x16(bombPosX, bombPosY);
 
 	//Draw
-	drawPlayer16x16();
 	if (bombPosX != -1 || bombPosY != -1)
 		drawBomb16x16(bombPosX, bombPosY);
+	drawPlayerF16x16(fplayerPosX, fplayerPosY, fpSprite);
+	drawPlayer16x16();
 }
