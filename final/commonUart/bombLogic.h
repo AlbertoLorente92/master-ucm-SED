@@ -3,8 +3,9 @@
 
 #include "visualizacion.h"
 #include "gameLogic.h"
+#include "uart.h"
 
 void setBomb(int posX, int posY);
-void boomBomb(void);
+void boomBomb(int mineOrFriends);
 
 #endif /* BOMBLOGIC_H_ */

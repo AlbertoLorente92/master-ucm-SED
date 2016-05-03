@@ -12,11 +12,11 @@
 extern "C" {
 #endif
 
-/*--- definicón de constantes ---*/
+#include "bombLogic.h"
+
 #define LF_char 0x0A	/* Caracter de salto de línea */
 #define CR_char 0x0D    /* Caracter de retorno de carro */
 
-/*--- prototipos de funciones ---*/
 void Uart_Init(int baud);
 void Uart_Config(void);
 
@@ -33,6 +33,9 @@ void Uart1_SendString(char *pt);
 void Uart1_Printf(char *fmt,...);
 
 void enviarPosPlayer(int posX, int posY, int pSprite);
+void enviarPosBomb(int posX, int posY);
+void enviarPosBombBoom(int posX, int posY);
+
 
 #ifdef __cplusplus
 }

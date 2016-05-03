@@ -94,6 +94,9 @@ int fpSprite = 0;
 extern int bombPosX;
 extern int bombPosY;
 
+extern int fbombPosX;
+extern int fbombPosY;
+
 int contSp = 0;
 spriteFrontalDemon spFrontal[3] = {
 		{
@@ -336,10 +339,14 @@ void redrawChanging(){
 	clear16x16(foldPlayerPosX, foldPlayerPosY);
 	if (bombPosX != -1 || bombPosY != -1)
 		clear16x16(bombPosX, bombPosY);
+	if (fbombPosX != -1 || fbombPosY != -1)
+			clear16x16(fbombPosX, fbombPosY);
 
 	//Draw
 	if (bombPosX != -1 || bombPosY != -1)
 		drawBomb16x16(bombPosX, bombPosY);
+	if (fbombPosX != -1 || fbombPosY != -1)
+		drawBomb16x16(fbombPosX, fbombPosY);
 	drawPlayerF16x16(fplayerPosX, fplayerPosY, fpSprite);
 	drawPlayer16x16();
 }

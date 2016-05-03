@@ -18,12 +18,22 @@ void Uart1Rx_ISR(void) __attribute__ ((interrupt ("IRQ")));
 int state = 0;
 int fpPosX;
 int fpPosY;
+
+int fbPosX;
+int fbPosY;
+
+int fbBoomPosX;
+int fbBoomPosY;
+
 extern int fpSprite;
 
 extern int foldPlayerPosX;
 extern int foldPlayerPosY;
 extern int fplayerPosX;
 extern int fplayerPosY;
+
+extern int fbombPosX;
+extern int fbombPosY;
 
 /*--- implementación de las funciones ---*/
 void Uart_Init(int baud)
@@ -80,6 +90,8 @@ void Uart_Config(void)
 // 0 Esperando commandos.
 // 1 Friend player posX.
 // 2 Friend player posY.
+// 3 Friend bomb posY.
+// 4 Friend bombBoom posY.
 
 void Uart0Rx_ISR(void){
 	char str[1];
@@ -98,6 +110,26 @@ void Uart0Rx_ISR(void){
 			fpPosY |= (*pt_str & 0x04)<<5;
 			fpSprite = (*pt_str & 0x03);
 			state = 1;
+
+			rI_ISPC = 1<<7;
+			return;
+		}
+
+		if((*pt_str & 0x60) == 0x20){
+			fbPosX = 0;
+			fbPosX |= (*pt_str & 0x1F);
+			fbPosY = 0;
+			state = 3;
+
+			rI_ISPC = 1<<7;
+			return;
+		}
+
+		if((*pt_str & 0x60) == 0x60){
+			fbBoomPosX = 0;
+			fbBoomPosX |= (*pt_str & 0x1F);
+			fbBoomPosY = 0;
+			state = 4;
 
 			rI_ISPC = 1<<7;
 			return;
@@ -124,6 +156,30 @@ void Uart0Rx_ISR(void){
 
 		// TODO decidir si dejar esto o no.
 		//redrawChanging();
+
+		rI_ISPC = 1<<7;
+		return;
+	}
+
+	if (state == 3){
+		fbPosY |= *pt_str;
+		state = 0;
+
+		fbombPosX = fbPosX<<4;
+		fbombPosY = fbPosY<<4; //Multiplicar por 16.
+
+		rI_ISPC = 1<<7;
+		return;
+	}
+
+	if (state == 4){
+		fbBoomPosY |= *pt_str;
+		state = 0;
+
+		boomBomb(1);
+
+		fbombPosX = -1;
+		fbombPosY = -1;
 
 		rI_ISPC = 1<<7;
 		return;
@@ -212,5 +268,27 @@ void enviarPosPlayer(int posX, int posY, int pSprite){
 
 	toSendByte = 0x00;
 	toSendByte |= (posY & 0x7F);
+	Uart0_SendByte(toSendByte);
+}
+
+void enviarPosBomb(int posX, int posY){
+	int toSendByte = 0x80;
+	toSendByte |= 0x20;
+	toSendByte |= posX>>4; // Dividir entre 16.
+	Uart0_SendByte(toSendByte);
+
+	toSendByte = 0x00;
+	toSendByte |= posY>>4;
+	Uart0_SendByte(toSendByte);
+}
+
+void enviarPosBombBoom(int posX, int posY){
+	int toSendByte = 0x80;
+	toSendByte |= 0x60;
+	toSendByte |= posX>>4; // Dividir entre 16.
+	Uart0_SendByte(toSendByte);
+
+	toSendByte = 0x00;
+	toSendByte |= posY>>4;
 	Uart0_SendByte(toSendByte);
 }

@@ -2,6 +2,8 @@
 
 int bombPosX = -1;
 int bombPosY = -1;
+int fbombPosX = -1;
+int fbombPosY = -1;
 
 extern int map16x16[];
 extern int playerPosX;
@@ -18,6 +20,8 @@ void setBomb(int posX, int posY){
 	bombPosX = ((posX + 16/2) /16)*16;
 	bombPosY = ((posY + 16/2) /16)*16;
 
+	enviarPosBomb(bombPosX, bombPosY);
+
 	rTCON |= (0x1<<13);
 	rTCON &= ~(0x1<<13);
 	rTCON |= (0x1<<15);
@@ -26,19 +30,35 @@ void setBomb(int posX, int posY){
 	redrawChanging();
 }
 
-void boomBomb(void) {
-
-	if (bombPosX == -1 && bombPosY == -1)
+void boomBomb(int mineOrFriends) {
+	if(mineOrFriends == 0){
+		if (bombPosX == -1 && bombPosY == -1)
 			return;
-	clear16x16(bombPosX, bombPosY);
+		enviarPosBombBoom(bombPosX, bombPosY);
+	}else{
+		if (fbombPosX == -1 && fbombPosY == -1)
+			return;
+	}
+
+	if(mineOrFriends == 0){
+		clear16x16(bombPosX, bombPosY);
+	}else{
+		clear16x16(fbombPosX, fbombPosY);
+	}
 
 	int playerTopLeftX = playerPosX/16;
 	int playerTopLeftY = playerPosY/16;
 	int playerBotRigthX = (playerPosX+15)/16;
 	int playerBotRigthY = (playerPosY+15)/16;
 
-	int i = bombPosX /16;
-	int j = bombPosY /16;
+	int i, j;
+	if(mineOrFriends == 0){
+		i = bombPosX /16;
+		j = bombPosY /16;
+	}else{
+		i = fbombPosX /16;
+		j = fbombPosY /16;
+	}
 
 
 	if((i==playerTopLeftX && j==playerTopLeftY) || (i==playerBotRigthX && j==playerBotRigthY)){
@@ -111,7 +131,12 @@ void boomBomb(void) {
 		return;
 	}
 
-	bombPosX = -1;
-	bombPosY = -1;
+	if(mineOrFriends == 0){
+		bombPosX = -1;
+		bombPosY = -1;
+	}else{
+		fbombPosX = -1;
+		fbombPosY = -1;
+	}
 	redrawChanging();
 }

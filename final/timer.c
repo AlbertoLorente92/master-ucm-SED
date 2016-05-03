@@ -4,14 +4,11 @@
 #include "playerMovement.h"
 #include "bombLogic.h"
 
-/*--- funciones externas ---*/
 extern void D8Led_symbol(int value);
 extern int key_read();
 
-/*--- declaracion de funciones ---*/
 void timer_ISR(void) __attribute__ ((interrupt ("IRQ")));
 void timer_init();
-/*--- codigo de las funciones ---*/
 
 void timer_init(){
 	// Configuracion del controlador de interrupciones */
@@ -85,7 +82,7 @@ void timer_ISR(void){
 
 	if ( ((rI_ISPR & BIT_TIMER2)!=0)){
 		rTCON &= ~(0x1<<12);
-		boomBomb();
+		boomBomb(0);
 		rI_ISPC = BIT_TIMER2;
 	}
 
