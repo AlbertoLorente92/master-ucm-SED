@@ -190,13 +190,100 @@ void Uart0Rx_ISR(void){
 }
 
 void Uart1Rx_ISR(void){
-	 char str[1];
-	 char *pt_str = str;
+	char str[1];
+	char *pt_str = str;
+	*pt_str = Uart1_Getch();
 
-	 *pt_str = Uart0_Getch();
+	if ((*pt_str & 0x80) != 0){
+		state = 0;
+	}
+
+	if ((state == 0) && ((*pt_str & 0x80) != 0)){
+		if((*pt_str & 0x60) == 0x00){
+			fpPosX = 0;
+			fpPosX |= (*pt_str & 0x18)<<4;
+			fpPosY = 0;
+			fpPosY |= (*pt_str & 0x04)<<5;
+			fpSprite = (*pt_str & 0x03);
+			state = 1;
+
+			rI_ISPC = 1<<6;
+			return;
+		}
+
+		if((*pt_str & 0x60) == 0x20){
+			fbPosX = 0;
+			fbPosX |= (*pt_str & 0x1F);
+			fbPosY = 0;
+			state = 3;
+
+			rI_ISPC = 1<<6;
+			return;
+		}
+
+		if((*pt_str & 0x60) == 0x60){
+			fbBoomPosX = 0;
+			fbBoomPosX |= (*pt_str & 0x1F);
+			fbBoomPosY = 0;
+			state = 4;
+
+			rI_ISPC = 1<<6;
+			return;
+		}
+		// TODO other commands
+	}
+
+	if (state == 1){
+		fpPosX |= *pt_str;
+		state = 2;
+
+		rI_ISPC = 1<<6;
+		return;
+	}
+
+	if (state == 2){
+		fpPosY |= *pt_str;
+		state = 0;
+
+		foldPlayerPosX = fplayerPosX;
+		foldPlayerPosY = fplayerPosY;
+		fplayerPosX = fpPosX;
+		fplayerPosY = fpPosY;
+
+		// TODO decidir si dejar esto o no.
+		//redrawChanging();
+
+		rI_ISPC = 1<<6;
+		return;
+	}
+
+	if (state == 3){
+		fbPosY |= *pt_str;
+		state = 0;
+
+		fbombPosX = fbPosX<<4;
+		fbombPosY = fbPosY<<4; //Multiplicar por 16.
+
+		rI_ISPC = 1<<6;
+		return;
+	}
+
+	if (state == 4){
+		fbBoomPosY |= *pt_str;
+		state = 0;
+
+		boomBomb(1);
+
+		fbombPosX = -1;
+		fbombPosY = -1;
+
+		rI_ISPC = 1<<6;
+		return;
+	}
 
 	// borra el bit pendiente en INTPND
-	rI_ISPC = 1<<6;}
+	rI_ISPC = 1<<6;
+}
 
 inline void Uart0_TxEmpty(void){
     while (!(rUTRSTAT0 & 0x4));} 	     // esperar a que el shifter de TX se vacie
@@ -260,35 +347,35 @@ void enviarPosPlayer(int posX, int posY, int pSprite){
 	toSendByte |= (posX & 0x180)>>4;
 	toSendByte |= (posY & 0x80)>>5;
 	toSendByte |= (pSprite & 0x2);
-	Uart0_SendByte(toSendByte);
+	Uart1_SendByte(toSendByte);
 
 	toSendByte = 0x00;
 	toSendByte |= (posX & 0x7F);
-	Uart0_SendByte(toSendByte);
+	Uart1_SendByte(toSendByte);
 
 	toSendByte = 0x00;
 	toSendByte |= (posY & 0x7F);
-	Uart0_SendByte(toSendByte);
+	Uart1_SendByte(toSendByte);
 }
 
 void enviarPosBomb(int posX, int posY){
 	int toSendByte = 0x80;
 	toSendByte |= 0x20;
 	toSendByte |= posX>>4; // Dividir entre 16.
-	Uart0_SendByte(toSendByte);
+	Uart1_SendByte(toSendByte);
 
 	toSendByte = 0x00;
 	toSendByte |= posY>>4;
-	Uart0_SendByte(toSendByte);
+	Uart1_SendByte(toSendByte);
 }
 
 void enviarPosBombBoom(int posX, int posY){
 	int toSendByte = 0x80;
 	toSendByte |= 0x60;
 	toSendByte |= posX>>4; // Dividir entre 16.
-	Uart0_SendByte(toSendByte);
+	Uart1_SendByte(toSendByte);
 
 	toSendByte = 0x00;
 	toSendByte |= posY>>4;
-	Uart0_SendByte(toSendByte);
+	Uart1_SendByte(toSendByte);
 }
