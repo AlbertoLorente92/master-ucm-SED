@@ -10,6 +10,8 @@ int oldPlayerPosY = -1;
 int playerPosX = -1;
 int playerPosY = -1;
 
+extern int contSp;
+
 void initPlayerPosition16x16(void){
 	int i, j;
 	while(1){
@@ -71,6 +73,7 @@ void movePlayerUp(void){
 		oldPlayerPosX = playerPosX;
 		playerPosY -= 1;
 		redrawChanging();
+		enviarPosPlayer(playerPosX, playerPosY, contSp);
 		oldPlayerPosY = playerPosY;
 		oldPlayerPosX = playerPosX;
 		checkWinGame();
@@ -83,6 +86,7 @@ void movePlayerDown(void){
 		oldPlayerPosX = playerPosX;
 		playerPosY += 1;
 		redrawChanging();
+		enviarPosPlayer(playerPosX, playerPosY, contSp);
 		oldPlayerPosY = playerPosY;
 		oldPlayerPosX = playerPosX;
 		checkWinGame();
@@ -95,6 +99,7 @@ void movePlayerLeft(void){
 		oldPlayerPosX = playerPosX;
 		playerPosX -= 1;
 		redrawChanging();
+		enviarPosPlayer(playerPosX, playerPosY, contSp);
 		oldPlayerPosY = playerPosY;
 		oldPlayerPosX = playerPosX;
 		checkWinGame();
@@ -107,6 +112,7 @@ void movePlayerRight(void){
 		oldPlayerPosX = playerPosX;
 		playerPosX += 1;
 		redrawChanging();
+		enviarPosPlayer(playerPosX, playerPosY, contSp);
 		oldPlayerPosY = playerPosY;
 		oldPlayerPosX = playerPosX;
 		checkWinGame();

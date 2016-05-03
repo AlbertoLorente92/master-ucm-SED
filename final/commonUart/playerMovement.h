@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "visualizacion.h"
 #include "gameLogic.h"
+#include "uart.h"
 
 void initPlayerPosition16x16(void);
 void checkWinGame(void);

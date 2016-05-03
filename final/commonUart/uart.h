@@ -32,6 +32,8 @@ void Uart1_SendByte(int data);
 void Uart1_SendString(char *pt);
 void Uart1_Printf(char *fmt,...);
 
+void enviarPosPlayer(int posX, int posY, int pSprite);
+
 #ifdef __cplusplus
 }
 #endif

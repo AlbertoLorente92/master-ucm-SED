@@ -199,5 +199,18 @@ void Uart1_Printf(char *fmt,...){
     Uart1_SendString(string);
     va_end(ap);}
 
+void enviarPosPlayer(int posX, int posY, int pSprite){
+	int toSendByte = 0x80;
+	toSendByte |= (posX & 0x180)>>4;
+	toSendByte |= (posY & 0x80)>>5;
+	toSendByte |= (pSprite & 0x2);
+	Uart0_SendByte(toSendByte);
 
+	toSendByte = 0x00;
+	toSendByte |= (posX & 0x7F);
+	Uart0_SendByte(toSendByte);
 
+	toSendByte = 0x00;
+	toSendByte |= (posY & 0x7F);
+	Uart0_SendByte(toSendByte);
+}
