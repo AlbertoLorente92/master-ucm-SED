@@ -176,6 +176,9 @@ void Uart0Rx_ISR(void){
 		fbBoomPosY |= *pt_str;
 		state = 0;
 
+		fbombPosX = fbBoomPosX*16;
+		fbombPosY = fbBoomPosY*16;
+
 		boomBomb(1);
 
 		fbombPosX = -1;
