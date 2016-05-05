@@ -4,7 +4,7 @@
 
 extern const uint8 font;
 
-static uint8 buffer[320*240/2];
+uint8 buffer[320*240/2];
 void lcd_init( void ){
 	rLCDCON1 	= 0x1C021;//
 	rLCDCON2 	= 0x13CEF;//
@@ -50,6 +50,28 @@ void lcd_putpixel( uint16 x, uint16 y, uint8 color){
 	byte &= ~(0xF << bit);
 	byte |= color << bit;
 	buffer[i] = byte;
+}
+
+void lcd_clear16x16(uint16 x, uint16 y){
+	uint16 i, j, k;
+	i = x/2 + y*(320/2);
+	if (x%2 == 0){
+		for (j=0; j<16; j++){
+			for(k=0; k<8; k++){
+				buffer[i+k] = 0;
+			}
+			i += 320/2;
+		}
+	}else{
+	for (j=0; j<16; j++){
+			buffer[i] &= 0xF0;
+			for(k=1; k<8; k++){
+				buffer[i+k] = 0;
+			}
+			buffer[i+8] &= 0x0F;
+			i += 320/2;
+		}
+	}
 }
 
 /*

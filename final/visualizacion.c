@@ -316,10 +316,7 @@ void clearPlayer16x16(void){ // Que acepte parametros
 }
 
 void clear16x16(int posX, int posY){
-	int i, j;
-		for (i = 0; i<16; i++)
-			for (j = 0; j<16; j++)
-				lcd_putpixel(posX+i, posY+j, WHITE);
+	lcd_clear16x16(posX, posY);
 }
 
 void drawBomb16x16(int posX, int posY){
