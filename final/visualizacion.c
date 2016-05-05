@@ -348,4 +348,6 @@ void redrawChanging(){
 	foldPlayerPosX = fplayerPosX;
 	foldPlayerPosY = fplayerPosY;
 	drawPlayer16x16();
+	oldPlayerPosX = playerPosX;
+	oldPlayerPosY = playerPosY;
 }

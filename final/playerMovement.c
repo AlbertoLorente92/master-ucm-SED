@@ -69,52 +69,32 @@ int isValidPosition(int x, int y){
 /* Dado a los obstaculos que rodean al mapa no es necesario preocuparnos de salir del mapa.*/
 void movePlayerUp(void){
 	if(isValidPosition(playerPosX, playerPosY -1)){
-		oldPlayerPosY = playerPosY;
-		oldPlayerPosX = playerPosX;
 		playerPosY -= 1;
-		redrawChanging();
 		enviarPosPlayer(playerPosX, playerPosY, contSp);
-		oldPlayerPosY = playerPosY;
-		oldPlayerPosX = playerPosX;
 		checkWinGame();
 	}
 }
 
 void movePlayerDown(void){
 	if(isValidPosition(playerPosX, playerPosY +1)){
-		oldPlayerPosY = playerPosY;
-		oldPlayerPosX = playerPosX;
 		playerPosY += 1;
-		redrawChanging();
 		enviarPosPlayer(playerPosX, playerPosY, contSp);
-		oldPlayerPosY = playerPosY;
-		oldPlayerPosX = playerPosX;
 		checkWinGame();
 	}
 }
 
 void movePlayerLeft(void){
 	if(isValidPosition(playerPosX -1, playerPosY)){
-		oldPlayerPosY = playerPosY;
-		oldPlayerPosX = playerPosX;
 		playerPosX -= 1;
-		redrawChanging();
 		enviarPosPlayer(playerPosX, playerPosY, contSp);
-		oldPlayerPosY = playerPosY;
-		oldPlayerPosX = playerPosX;
 		checkWinGame();
 	}
 }
 
 void movePlayerRight(void){
 	if(isValidPosition(playerPosX +1, playerPosY)){
-		oldPlayerPosY = playerPosY;
-		oldPlayerPosX = playerPosX;
 		playerPosX += 1;
-		redrawChanging();
 		enviarPosPlayer(playerPosX, playerPosY, contSp);
-		oldPlayerPosY = playerPosY;
-		oldPlayerPosX = playerPosX;
 		checkWinGame();
 	}
 }

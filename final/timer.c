@@ -74,6 +74,8 @@ void timer_ISR(void){
 		if (aux == 6)
 			movePlayerRight();
 
+		redrawChanging();
+
 		D8Led_symbol(aux);
 
 		rI_ISPC = BIT_TIMER0;
