@@ -63,7 +63,7 @@ void lcd_clear16x16(uint16 x, uint16 y){
 			i += 320/2;
 		}
 	}else{
-	for (j=0; j<16; j++){
+		for (j=0; j<16; j++){
 			buffer[i] &= 0xF0;
 			for(k=1; k<8; k++){
 				buffer[i+k] = 0;
