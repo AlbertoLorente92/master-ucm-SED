@@ -345,5 +345,7 @@ void redrawChanging(){
 	if (fbombPosX != -1 || fbombPosY != -1)
 		drawBomb16x16(fbombPosX, fbombPosY);
 	drawPlayerF16x16(fplayerPosX, fplayerPosY, fpSprite);
+	foldPlayerPosX = fplayerPosX;
+	foldPlayerPosY = fplayerPosY;
 	drawPlayer16x16();
 }

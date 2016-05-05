@@ -149,8 +149,6 @@ void Uart0Rx_ISR(void){
 		fpPosY |= *pt_str;
 		state = 0;
 
-		foldPlayerPosX = fplayerPosX;
-		foldPlayerPosY = fplayerPosY;
 		fplayerPosX = fpPosX;
 		fplayerPosY = fpPosY;
 
