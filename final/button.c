@@ -47,6 +47,9 @@ void Eint4567_ISR(void)
 {
 	if(playPress == 0){
 		playPress = 1;
+		DelayMs(100);
+		rEXTINTPND = 1<<2 | 1<<3;
+		rI_ISPC = 1<<21;
 	}else{
 		which_int = rEXTINTPND & (1<<2 | 1<<3);
 		setBomb(playerPosX, playerPosY);
