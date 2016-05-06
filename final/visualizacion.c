@@ -75,11 +75,6 @@ int playerOne16x16Frontal3[16*16] ={
 		0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b1101,0b1111,0b1111,0b1101,0b0000,0b0000,0b0000,0b0000,0b0000
 };*/
 
-typedef struct
-{
-	int sprite[16*16];
-} spriteFrontalDemon;
-
 extern int oldPlayerPosX;
 extern int oldPlayerPosY;
 extern int playerPosX;
@@ -98,7 +93,7 @@ extern int fbombPosX;
 extern int fbombPosY;
 
 int contSp = 0;
-spriteFrontalDemon spFrontal[3] = {
+uint8 spFrontal[3][16*16] = {
 		{
 				0b1110,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b1110,
 				0b1110,0b1110,0b0000,0b0000,0b0000,0b1101,0b1101,0b1101,0b1101,0b1101,0b1101,0b0000,0b0000,0b0000,0b1110,0b1110,
@@ -288,8 +283,8 @@ void drawPlayer16x16(void){
 	for (i = 0; i<16; i++){
 		for (j = 0; j<16; j++){
 			int aux = getSprite(contSp);
-			if(spFrontal[aux].sprite[(j*16)+i] != 0b0000){
-				lcd_putpixel(playerPosX+i, playerPosY+j, spFrontal[aux].sprite[(j*16)+i] );
+			if(spFrontal[aux][(j*16)+i] != 0b0000){
+				lcd_putpixel(playerPosX+i, playerPosY+j, spFrontal[aux][(j*16)+i] );
 			}
 		}
 	}
@@ -300,8 +295,8 @@ void drawPlayerF16x16(int posX, int posY, int aux){
 	int i,j;
 	for (i = 0; i<16; i++){
 		for (j = 0; j<16; j++){
-			if(spFrontal[aux].sprite[(j*16)+i] != 0b0000){
-				lcd_putpixel(posX+i, posY+j, spFrontal[aux].sprite[(j*16)+i] );
+			if(spFrontal[aux][(j*16)+i] != 0b0000){
+				lcd_putpixel(posX+i, posY+j, spFrontal[aux][(j*16)+i] );
 			}
 		}
 	}
