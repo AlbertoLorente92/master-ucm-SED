@@ -61,11 +61,9 @@ void boomBomb(int mineOrFriends) {
 	}
 
 
-	if(mineOrFriends == 0){
-		if((i==playerTopLeftX && j==playerTopLeftY) || (i==playerBotRigthX && j==playerBotRigthY)){
-			gameOver();
-			return;
-		}
+	if((i==playerTopLeftX && j==playerTopLeftY) || (i==playerBotRigthX && j==playerBotRigthY)){
+		gameOver();
+		return;
 	}
 
 	//up.
@@ -79,11 +77,9 @@ void boomBomb(int mineOrFriends) {
 		}
 	}
 
-	if(mineOrFriends == 0){
-		if((i==playerTopLeftX && j==playerTopLeftY) || (i==playerBotRigthX && j==playerBotRigthY)){
-			gameOver();
-			return;
-		}
+	if((i==playerTopLeftX && j==playerTopLeftY) || (i==playerBotRigthX && j==playerBotRigthY)){
+		gameOver();
+		return;
 	}
 
 	//down.
@@ -97,11 +93,9 @@ void boomBomb(int mineOrFriends) {
 		}
 	}
 
-	if(mineOrFriends == 0){
-		if((i==playerTopLeftX && j==playerTopLeftY) || (i==playerBotRigthX && j==playerBotRigthY)){
-			gameOver();
-			return;
-		}
+	if((i==playerTopLeftX && j==playerTopLeftY) || (i==playerBotRigthX && j==playerBotRigthY)){
+		gameOver();
+		return;
 	}
 
 	//left
@@ -116,11 +110,9 @@ void boomBomb(int mineOrFriends) {
 		}
 	}
 
-	if(mineOrFriends == 0){
-		if((i==playerTopLeftX && j==playerTopLeftY) || (i==playerBotRigthX && j==playerBotRigthY)){
-			gameOver();
-			return;
-		}
+	if((i==playerTopLeftX && j==playerTopLeftY) || (i==playerBotRigthX && j==playerBotRigthY)){
+		gameOver();
+		return;
 	}
 
 	//right
@@ -134,11 +126,9 @@ void boomBomb(int mineOrFriends) {
 		}
 	}
 
-	if(mineOrFriends == 0){
-		if((i==playerTopLeftX && j==playerTopLeftY) || (i==playerBotRigthX && j==playerBotRigthY)){
-			gameOver();
-			return;
-		}
+	if((i==playerTopLeftX && j==playerTopLeftY) || (i==playerBotRigthX && j==playerBotRigthY)){
+		gameOver();
+		return;
 	}
 
 	if(mineOrFriends == 0){
