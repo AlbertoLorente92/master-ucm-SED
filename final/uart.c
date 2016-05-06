@@ -96,6 +96,7 @@ void Uart_Config(void)
 // 4 Friend bombBoom posY.
 
 void Uart0Rx_ISR(void){
+	/*
 	char str[1];
 	char *pt_str = str;
 	*pt_str = Uart0_Getch();
@@ -198,6 +199,7 @@ void Uart0Rx_ISR(void){
 
 	// borra el bit pendiente en INTPND
 	rI_ISPC = 1<<7;
+	*/
 }
 
 void Uart1Rx_ISR(void){
@@ -229,6 +231,14 @@ void Uart1Rx_ISR(void){
 			state = 3;
 
 			rI_ISPC = 1<<6;
+			return;
+		}
+
+		if((*pt_str & 0x60) == 0x40){
+			friendSeed = 0;
+			friendSeed |= (*pt_str & 0x1F);
+
+			rI_ISPC = 1<<7;
 			return;
 		}
 
