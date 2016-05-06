@@ -238,7 +238,7 @@ void Uart1Rx_ISR(void){
 			friendSeed = 0;
 			friendSeed |= (*pt_str & 0x1F);
 
-			rI_ISPC = 1<<7;
+			rI_ISPC = 1<<6;
 			return;
 		}
 
