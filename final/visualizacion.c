@@ -279,6 +279,7 @@ void generateDirt16x16(void){
 
 // TODO Que acepte parametros, como drawBimb16x16
 void drawPlayer16x16(void){
+	/*
 	int i,j;
 	for (i = 0; i<16; i++){
 		for (j = 0; j<16; j++){
@@ -287,7 +288,9 @@ void drawPlayer16x16(void){
 				lcd_putpixel(playerPosX+i, playerPosY+j, spFrontal[aux][(j*16)+i] );
 			}
 		}
-	}
+	}*/
+	int aux = getSprite(contSp);
+	lcd_drawSprite16x16(playerPosX, playerPosY, spFrontal[aux]);
 	contSp = (contSp +1)%4;
 }
 

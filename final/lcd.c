@@ -63,12 +63,61 @@ void lcd_clear16x16(uint16 x, uint16 y){
 			i += 320/2;
 		}
 	}else{
-	for (j=0; j<16; j++){
+		for (j=0; j<16; j++){
 			buffer[i] &= 0xF0;
 			for(k=1; k<8; k++){
 				buffer[i+k] = 0;
 			}
 			buffer[i+8] &= 0x0F;
+			i += 320/2;
+		}
+	}
+}
+
+void lcd_drawSprite16x16(uint16 x, uint16 y, uint8* sprite){
+	uint16 i, j, k;
+	uint8 aux;
+	i = x/2 + y*(320/2);
+	if (x%2 == 0){
+		for (j=0; j<16; j++){
+			for(k=0; k<16; k +=2){
+				aux = sprite[(j*16)+k];
+				if(aux != 0b0000){
+					buffer[i+(k>>1)] &= ~(0xF0);
+					buffer[i+(k>>1)] |= aux << 4;
+				}
+				aux = sprite[(j*16)+k+1];
+				if(aux != 0b0000){
+					buffer[i+(k>>1)] &= ~(0x0F);
+					buffer[i+(k>>1)] |= aux;
+				}
+			}
+			i += 320/2;
+		}
+	}else{
+		for (j=0; j<16; j++){
+			aux = sprite[(j*16)];
+			if(aux != 0b0000){
+				buffer[i] &= ~(0x0F);
+				buffer[i] |= aux;
+			}
+			for(k=1; k<15; k +=2){
+				aux = sprite[(j*16)+k];
+				if(aux != 0b0000){
+					buffer[i+((k+1)>>1)] &= ~(0xF0);
+					buffer[i+((k+1)>>1)] |= aux << 4;
+				}
+				aux = sprite[(j*16)+k+1];
+				if(aux != 0b0000){
+					buffer[i+((k+1)>>1)] &= ~(0x0F);
+					buffer[i+((k+1)>>1)] |= aux;
+				}
+			}
+			aux = sprite[(j*16)+15];
+			if(aux != 0b0000){
+				buffer[i+8] &= ~(0xF0);
+				buffer[i+8] |= aux << 4;
+			}
 			i += 320/2;
 		}
 	}

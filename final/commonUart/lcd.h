@@ -22,6 +22,7 @@ void lcd_init( void );
 void lcd_clear( void );
 void lcd_putpixel( uint16 x, uint16 y, uint8 color);
 void lcd_clear16x16(uint16 x, uint16 y);
+void lcd_drawSprite16x16(uint16 x, uint16 y, uint8* sprite);
 uint8 lcd_getpixel( uint16 x, uint16 y );
 void lcd_draw_hline( uint16 xleft, uint16 xright, uint16 y, uint8 color, uint16 width );
 void lcd_draw_vline( uint16 yup, uint16 ydown, uint16 x, uint8 color, uint16 width );
