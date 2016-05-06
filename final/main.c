@@ -19,7 +19,6 @@ int Main(void){
 	sys_init(); // inicializacion de la placa, interrupciones, puertos
 	Uart_Init(115200); // inicializacion de la Uart
 	keyboard_init();
-	timer_init();
 	Eint4567_init();
 
 	init_visualizacion();
@@ -28,7 +27,9 @@ int Main(void){
 	drawMap16x16();
 
 	initPlayerPosition16x16();
-	drawPlayer16x16();
+	//drawPlayer16x16();
+
+	timer_init();
 
 	while(1){
 	}
