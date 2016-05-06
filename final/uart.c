@@ -15,6 +15,8 @@
 void Uart0Rx_ISR(void) __attribute__ ((interrupt ("IRQ")));
 void Uart1Rx_ISR(void) __attribute__ ((interrupt ("IRQ")));
 
+extern int friendSeed;
+
 int state = 0;
 int fpPosX;
 int fpPosY;
@@ -120,6 +122,14 @@ void Uart0Rx_ISR(void){
 			fbPosX |= (*pt_str & 0x1F);
 			fbPosY = 0;
 			state = 3;
+
+			rI_ISPC = 1<<7;
+			return;
+		}
+
+		if((*pt_str & 0x60) == 0x40){
+			friendSeed = 0;
+			friendSeed |= (*pt_str & 0x1F);
 
 			rI_ISPC = 1<<7;
 			return;
@@ -378,5 +388,12 @@ void enviarPosBombBoom(int posX, int posY){
 
 	toSendByte = 0x00;
 	toSendByte |= posY>>4;
+	Uart1_SendByte(toSendByte);
+}
+
+void enviarSeed(int seed){
+	int toSendByte = 0x80;
+	toSendByte |= 0x40;
+	toSendByte |= (seed & 0x1F);
 	Uart1_SendByte(toSendByte);
 }

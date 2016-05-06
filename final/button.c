@@ -4,6 +4,8 @@
 #include "uart.h"
 #include "bombLogic.h"
 
+extern int playPress;
+
 extern int playerPosX;
 extern int playerPosY;
 
@@ -43,11 +45,13 @@ void Eint4567_init()
 int which_int;
 void Eint4567_ISR(void)
 {
-	which_int = rEXTINTPND & (1<<2 | 1<<3);
-
-	setBomb(playerPosX, playerPosY);
-
-	DelayMs(100);
-	rEXTINTPND = 1<<2 | 1<<3;
-	rI_ISPC = 1<<21;
+	if(playPress == 0){
+		playPress = 1;
+	}else{
+		which_int = rEXTINTPND & (1<<2 | 1<<3);
+		setBomb(playerPosX, playerPosY);
+		DelayMs(100);
+		rEXTINTPND = 1<<2 | 1<<3;
+		rI_ISPC = 1<<21;
+	}
 }

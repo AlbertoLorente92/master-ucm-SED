@@ -6,7 +6,7 @@
 #include "gameLogic.h"
 #include "uart.h"
 
-void initPlayerPosition16x16(void);
+void initPlayerPosition16x16(int isMine);
 void checkWinGame(void);
 void movePlayerUp(void);
 void movePlayerDown(void);

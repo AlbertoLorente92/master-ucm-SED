@@ -23,10 +23,10 @@ extern int oldPlayerPosY;
 extern int playerPosX;
 extern int playerPosY;
 
-int foldPlayerPosX = 0;
-int foldPlayerPosY = 0;
-int fplayerPosX = 0;
-int fplayerPosY = 0;
+int foldPlayerPosX;
+int foldPlayerPosY;
+int fplayerPosX;
+int fplayerPosY;
 int fpSprite = 0;
 
 extern int bombPosX;
@@ -260,6 +260,10 @@ void init_visualizacion(void){
 	lcd_clear();
 }
 
+
+void init_welcomeBoom(void){
+	lcd_puts_x2( 0, 20, BLACK, "     BOMBERMAN     " );
+}
 void drawMap16x16(void){
 	int i, j;
 	for (i = 0; i<320/16; i++)

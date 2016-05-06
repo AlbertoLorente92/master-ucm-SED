@@ -10,6 +10,9 @@ extern void timer_init();
 extern void Eint4567_init();
 extern void initExitPosition16x16(void);
 
+extern int playPress;
+extern int gameSeed;
+extern int friendSeed;
 
 
 /*--- declaracion de funciones ---*/
@@ -17,17 +20,40 @@ int Main(void);
 
 int Main(void){
 	sys_init(); // inicializacion de la placa, interrupciones, puertos
+	friendSeed = -1;
 	Uart_Init(115200); // inicializacion de la Uart
 	keyboard_init();
 	Eint4567_init();
 
 	init_visualizacion();
+	init_welcomeBoom();
+
+	playPress = 0;
+	gameSeed = 0;
+
+	while(playPress == 0){
+		gameSeed +=1;
+	}
+
+	enviarSeed(gameSeed);
+	gameSeed = gameSeed & 0x01F;
+
+	while(friendSeed == -1){}
+
+	int isMine;
+	if (gameSeed > friendSeed){
+		srand(gameSeed);
+		isMine = 1;
+	}else{
+		srand(friendSeed);
+		isMine = 0;
+	}
+
 	generateDirt16x16();
 	initExitPosition16x16();
 	drawMap16x16();
 
-	initPlayerPosition16x16();
-	//drawPlayer16x16();
+	initPlayerPosition16x16(isMine);
 
 	timer_init();
 

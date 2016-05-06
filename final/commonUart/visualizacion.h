@@ -11,6 +11,7 @@
 #define NUMBER_OF_DIRT (0x60) // 96
 
 void init_visualizacion(void);
+void init_welcomeBoom(void);
 void drawMap16x16(void);
 void drawWall16x16(int x, int y);
 void drawDirt16x16(int x, int y);

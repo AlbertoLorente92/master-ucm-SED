@@ -1,5 +1,9 @@
 #include "gameLogic.h"
 
+int playPress;
+int gameSeed;
+int friendSeed;
+
 int exitPosX;
 int exitPosY;
 
