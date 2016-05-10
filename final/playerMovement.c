@@ -22,7 +22,7 @@ void initPlayerPosition16x16(int isMine){
 	while(1){
 		i = rand() % (320/16);
 		j = rand() % (240/16);
-		if(map16x16[j*(320/16) + i] == NoNe){
+		if(isValidPos(i, j)){
 			pos1X = i;
 			pos1Y = j;
 			break;
@@ -31,7 +31,7 @@ void initPlayerPosition16x16(int isMine){
 	while(1){
 		i = rand() % (320/16);
 		j = rand() % (240/16);
-		if((map16x16[j*(320/16) + i] == NoNe) && ((pos1X != i) || (pos1X != j))){
+		if(isValidPos(i, j) && ((pos1X != i) || (pos1X != j))){
 			pos2X = i;
 			pos2Y = j;
 			break;
@@ -59,6 +59,31 @@ void initPlayerPosition16x16(int isMine){
 		foldPlayerPosY = fplayerPosY;
 		foldPlayerPosX = fplayerPosX;
 	}
+}
+
+int isValidPos(int x, int y){
+	int freeNeighbors = 0;
+	if(map16x16[y*(320/16) + x] != NoNe)
+		return 0;
+	if (x-1 >= 0)
+		if (map16x16[y*(320/16) + x -1] == NoNe){
+			freeNeighbors += 1;
+		}
+	if (x+1 < 320/16)
+		if (map16x16[y*(320/16) + x +1] == NoNe){
+			freeNeighbors += 1;
+		}
+	if (y-1 >= 0)
+		if (map16x16[(y-1)*(320/16) + x] == NoNe){
+			freeNeighbors += 1;
+		}
+	if (y+1 < 240/16)
+		if (map16x16[(y+1)*(320/16) + x] == NoNe){
+			freeNeighbors += 1;
+		}
+	if(freeNeighbors >= 2)
+		return 1;
+	return 0;
 }
 
 void checkWinGame(){

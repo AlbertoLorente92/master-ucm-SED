@@ -31,6 +31,12 @@ int Main(void){
 	playPress = 0;
 	gameSeed = 0;
 
+	/* Hack un maletin. */
+	playPress = 1;
+	gameSeed = 1;
+	friendSeed = 5;
+	/* Hack un maletin. */
+
 	while(playPress == 0){
 		gameSeed +=1;
 	}
@@ -51,6 +57,7 @@ int Main(void){
 
 	generateDirt16x16();
 	initExitPosition16x16();
+	lcd_clear();
 	drawMap16x16();
 
 	initPlayerPosition16x16(isMine);
