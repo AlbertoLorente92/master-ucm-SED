@@ -305,10 +305,8 @@ void lcd_init( void ){
 */
 void lcd_clear( void ){
 	int i;
-	int j;
-	for(i = 0; i < 320; i++)
-		for(j = 0; j < 240; j++)
-			lcd_putpixel(i, j, WHITE);		
+	for(i = 0; i< 320*240/2; i++)
+		buffer[i] = 0x00;
 }
 
 /*
