@@ -61,3 +61,30 @@ void Led_Display(int LedStatus)
 		rPDATB=rPDATB |(0x01<<10)
 	;// poner a 1 el bit 10 del registro de datos del puerto B
 }
+
+int ledsBlink = 0;
+int ledsToogle = 0
+
+void ledsSetBlink(int aux){
+	ledsBlink = aux;
+}
+
+void ledsToggle(){
+	if (ledsBlink == 0){
+		leds1_on();
+		leds2_on();
+	}
+	if(ledsBlink == 1){
+		if(ledsToogle == 0){
+			ledsToogle = 1;
+			led1_off();
+			led2_off();
+		}
+		if(ledsToogle == 1){
+			ledsToogle = 0;
+			led1_on();
+			led2_on();
+		}
+	}
+}
+

@@ -51,6 +51,7 @@ void Eint4567_ISR(void)
 		rEXTINTPND = 1<<2 | 1<<3;
 		rI_ISPC = 1<<21;
 	}else{
+		ledsSetBlink();
 		which_int = rEXTINTPND & (1<<2 | 1<<3);
 		setBomb(playerPosX, playerPosY);
 		DelayMs(100);

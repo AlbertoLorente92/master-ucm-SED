@@ -25,7 +25,7 @@ void initExitPosition16x16(void){
 	exitPosY=5;
 }
 
-void gameOver(void){
+void _gameOver(void){
 	// deshabilitar timer
 	rINTMSK |= (1<<13 | 1<<12 | 1<<11);
 	// deshabilitar button
@@ -40,7 +40,12 @@ void gameOver(void){
 	//print Game over
 }
 
-void gameWin(void){
+void gameOver(void){
+	enviarGameLose();
+	_gameOver();
+}
+
+void _gameWin(void){
 	// deshabilitar timer
 	rINTMSK |= (1<<13 | 1<<12 | 1<<11);
 	// deshabilitar button
@@ -54,4 +59,9 @@ void gameWin(void){
 	lcd_clear();
 	drawPlayer16x16();
 	//print Game win
+}
+
+void gameWin(void){
+	enviarGameWin();
+	_gameWin();
 }

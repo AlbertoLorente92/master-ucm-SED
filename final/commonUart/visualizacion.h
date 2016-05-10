@@ -23,5 +23,7 @@ void clearPlayer16x16(void);
 void clear16x16(int posX, int posY);
 void drawBomb16x16(int posX, int posY);
 void redrawChanging();
+void drawWin();
+void drawLose();
 
 #endif /* VISUALIZACION_H_ */

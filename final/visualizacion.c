@@ -263,6 +263,7 @@ void init_visualizacion(void){
 
 void init_welcomeBoom(void){
 	lcd_puts_x2( 0, 20, BLACK, "     BOMBERMAN     " );
+	lcd_puts( 0, 60, BLACK, "   Pulsa Boton Izquierdo para empezar   " );
 }
 void drawMap16x16(void){
 	int i, j;
@@ -391,4 +392,14 @@ void redrawChanging(){
 	drawPlayer16x16();
 	oldPlayerPosX = playerPosX;
 	oldPlayerPosY = playerPosY;
+}
+
+void drawWin(){
+	lcd_clear();
+	lcd_puts_x2( 0, 20, BLACK, "      YOU WIN      " );
+}
+
+void drawLose(){
+	lcd_clear();
+	lcd_puts_x2( 0, 20, BLACK, "     YOU LOSE!     " );
 }

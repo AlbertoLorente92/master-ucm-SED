@@ -79,6 +79,8 @@ void timer_ISR(void){
 		D8Led_symbol(aux);
 
 		rI_ISPC = BIT_TIMER0;
+
+		ledsToggle();
 	}
 
 

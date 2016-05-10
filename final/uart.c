@@ -242,6 +242,19 @@ void Uart1Rx_ISR(void){
 				rI_ISPC = 1<<6;
 				return;
 			}
+
+			if((*pt_str & 0x1F) == 0x01){
+				gameOver();
+				rI_ISPC = 1<<6;
+				return;
+			}
+
+			if((*pt_str & 0x1F) == 0x02){
+				gameWin();
+				rI_ISPC = 1<<6;
+				return;
+			}
+
 		}
 
 		if((*pt_str & 0x60) == 0x60){
@@ -417,5 +430,19 @@ void enviarSeed(int seed){
 	Uart1_SendByte(toSendByte);
 
 	toSendByte = seed & 0x7F;
+	Uart1_SendByte(toSendByte);
+}
+
+void enviarGameWin(){
+	int toSendByte = 0x80;
+	toSendByte |= 0x40;
+	toSendByte |= 0x01;
+	Uart1_SendByte(toSendByte);
+}
+
+void enviarGameLose(){
+	int toSendByte = 0x80;
+	toSendByte |= 0x40;
+	toSendByte |= 0x02;
 	Uart1_SendByte(toSendByte);
 }

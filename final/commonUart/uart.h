@@ -36,6 +36,10 @@ void enviarPosPlayer(int posX, int posY, int pSprite);
 void enviarPosBomb(int posX, int posY);
 void enviarPosBombBoom(int posX, int posY);
 
+void enviarSeed(int seed);
+void enviarGameWin();
+void enviarGameLose();
+
 
 #ifdef __cplusplus
 }
