@@ -94,6 +94,7 @@ void Uart_Config(void)
 // 2 Friend player posY.
 // 3 Friend bomb posY.
 // 4 Friend bombBoom posY.
+// 5 Semilla.
 
 void Uart0Rx_ISR(void){
 	/*
@@ -235,11 +236,12 @@ void Uart1Rx_ISR(void){
 		}
 
 		if((*pt_str & 0x60) == 0x40){
-			friendSeed = 0;
-			friendSeed |= (*pt_str & 0x1F);
+			if((*pt_str & 0x1F) == 0x00){
+				state = 5;
 
-			rI_ISPC = 1<<6;
-			return;
+				rI_ISPC = 1<<6;
+				return;
+			}
 		}
 
 		if((*pt_str & 0x60) == 0x60){
@@ -297,6 +299,14 @@ void Uart1Rx_ISR(void){
 
 		fbombPosX = -1;
 		fbombPosY = -1;
+
+		rI_ISPC = 1<<6;
+		return;
+	}
+
+	if(state == 5){
+		friendSeed = pt_str;
+		state = 0;
 
 		rI_ISPC = 1<<6;
 		return;
@@ -404,6 +414,8 @@ void enviarPosBombBoom(int posX, int posY){
 void enviarSeed(int seed){
 	int toSendByte = 0x80;
 	toSendByte |= 0x40;
-	toSendByte |= (seed & 0x1F);
+	Uart1_SendByte(toSendByte);
+
+	toSendByte = seed & 0x7F;
 	Uart1_SendByte(toSendByte);
 }
