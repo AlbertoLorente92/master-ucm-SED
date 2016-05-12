@@ -318,7 +318,7 @@ void Uart1Rx_ISR(void){
 	}
 
 	if(state == 5){
-		friendSeed = pt_str;
+		friendSeed = *pt_str;
 		state = 0;
 
 		rI_ISPC = 1<<6;

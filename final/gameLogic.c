@@ -31,13 +31,7 @@ void _gameOver(void){
 	// deshabilitar button
 	rINTMSK |= (1<<21);
 
-	// Enviar a la otra placa el game over
-
-	//DelayMs(500);
-
-	//Clear lcd
-	lcd_clear();
-	//print Game over
+	drawWin();
 }
 
 void gameOver(void){
@@ -51,14 +45,7 @@ void _gameWin(void){
 	// deshabilitar button
 	rINTMSK |= (1<<21);
 
-	// Enviar a la otra placa el game over
-
-	//DelayMs(500);
-
-	//Clear lcd
-	lcd_clear();
-	drawPlayer16x16();
-	//print Game win
+	drawLose();
 }
 
 void gameWin(void){

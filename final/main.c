@@ -32,11 +32,11 @@ int Main(void){
 	gameSeed = 0;
 
 	/* Hack un maletin. */
-
+	/*
 	playPress = 1;
 	gameSeed = 1;
 	friendSeed = 5;
-
+	*/
 	/* Hack un maletin. */
 
 	while(playPress == 0){
