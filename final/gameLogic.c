@@ -31,7 +31,7 @@ void _gameOver(void){
 	// deshabilitar button
 	rINTMSK |= (1<<21);
 
-	drawWin();
+	drawLose();
 }
 
 void gameOver(void){
@@ -45,7 +45,7 @@ void _gameWin(void){
 	// deshabilitar button
 	rINTMSK |= (1<<21);
 
-	drawLose();
+	drawWin();
 }
 
 void gameWin(void){
