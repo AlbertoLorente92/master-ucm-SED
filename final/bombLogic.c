@@ -11,6 +11,8 @@ extern int playerPosY;
 extern int exitPosX;
 extern int exitPosY;
 
+extern void ledsSetBlink(int aux);
+
 void setBomb(int posX, int posY){
 	// Si ya esta plantada la bomba fuera.
 	if (bombPosX != -1 || bombPosY != -1)
@@ -21,6 +23,8 @@ void setBomb(int posX, int posY){
 	bombPosY = ((posY + 16/2) /16)*16;
 
 	enviarPosBomb(bombPosX, bombPosY);
+
+	ledsSetBlink(1);
 
 	rTCON |= (0x1<<13);
 	rTCON &= ~(0x1<<13);
@@ -35,6 +39,7 @@ void boomBomb(int mineOrFriends) {
 		if (bombPosX == -1 && bombPosY == -1)
 			return;
 		enviarPosBombBoom(bombPosX, bombPosY);
+		ledsSetBlink(0);
 	}else{
 		if (fbombPosX == -1 && fbombPosY == -1)
 			return;

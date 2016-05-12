@@ -5,6 +5,7 @@
 #include "bombLogic.h"
 
 extern void D8Led_symbol(int value);
+extern ledsToggle();
 extern int key_read();
 
 void timer_ISR(void) __attribute__ ((interrupt ("IRQ")));
@@ -77,10 +78,9 @@ void timer_ISR(void){
 		redrawChanging();
 
 		D8Led_symbol(aux);
+		ledsToggle();
 
 		rI_ISPC = BIT_TIMER0;
-
-		ledsToggle();
 	}
 
 

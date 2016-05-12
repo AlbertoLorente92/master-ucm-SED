@@ -63,7 +63,7 @@ void Led_Display(int LedStatus)
 }
 
 int ledsBlink = 0;
-int ledsToogle = 0
+int ledsToogle = 0;
 
 void ledsSetBlink(int aux){
 	ledsBlink = aux;
@@ -71,19 +71,21 @@ void ledsSetBlink(int aux){
 
 void ledsToggle(){
 	if (ledsBlink == 0){
-		leds1_on();
-		leds2_on();
+		led1_on();
+		led2_on();
 	}
 	if(ledsBlink == 1){
 		if(ledsToogle == 0){
 			ledsToogle = 1;
 			led1_off();
 			led2_off();
+			return;
 		}
 		if(ledsToogle == 1){
 			ledsToogle = 0;
 			led1_on();
 			led2_on();
+			return;
 		}
 	}
 }
