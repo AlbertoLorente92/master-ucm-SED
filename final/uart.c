@@ -242,9 +242,6 @@ void Uart0_SendByte(int data){
 	WrUTXH0(data);}			       // escribir data (utilizar macro)
 
 void Uart1_SendByte(int data){
-    if(data == '\n'){
-	   while ((rUFSTAT1 & 0xF0) == 15);		// esperar a que la FIFO no este llena
-	   WrUTXH1('\r');}						// escribir retorno de carro (utilizar macro)
     while ((rUFSTAT1 & 0xF0) == 15);		// esperar a que la FIFO no este llena
 	WrUTXH1(data);}
 

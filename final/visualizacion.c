@@ -35,6 +35,9 @@ extern int bombPosY;
 extern int fbombPosX;
 extern int fbombPosY;
 
+uint8 player1[3][16*16];
+uint8 player2[3][16*16];
+
 int contSp = 0;
 uint8 spFrontalDemon[3][16*16] = {
 		{
@@ -312,12 +315,12 @@ void drawSprite16x16(int posX, int posY,  uint8* sprite){
 
 void drawPlayer16x16(void){
 	int aux = getSprite(contSp);
-	drawSprite16x16(playerPosX, playerPosY, spFrontalDemon[aux]);
+	drawSprite16x16(playerPosX, playerPosY, player1[aux]);
 	contSp = (contSp +1) % 4; //Modulo 4.
 }
 
 void drawPlayerF16x16(int posX, int posY, int aux){
-	drawSprite16x16(posX, posY, spFrontalDemon[aux]);
+	drawSprite16x16(posX, posY, player2[aux]);
 }
 
 void clear16x16(int posX, int posY){
