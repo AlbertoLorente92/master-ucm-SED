@@ -35,11 +35,12 @@ extern int bombPosY;
 extern int fbombPosX;
 extern int fbombPosY;
 
-uint8 player1[3][16*16];
-uint8 player2[3][16*16];
+int player1;
+int player2;
 
 int contSp = 0;
-uint8 spFrontalDemon[3][16*16] = {
+uint8 playerSprites[2][3][16*16] = {
+	{
 		{
 				0b1110,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b1110,
 				0b1110,0b1110,0b0000,0b0000,0b0000,0b1101,0b1101,0b1101,0b1101,0b1101,0b1101,0b0000,0b0000,0b0000,0b1110,0b1110,
@@ -94,10 +95,7 @@ uint8 spFrontalDemon[3][16*16] = {
 				0b0000,0b0000,0b0000,0b0000,0b1101,0b1101,0b1101,0b1101,0b1110,0b1110,0b1101,0b0000,0b0000,0b0000,0b0000,0b0000,
 				0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b1101,0b1111,0b1111,0b1101,0b0000,0b0000,0b0000,0b0000,0b0000
 		}
-};
-
-int contSpFriend = 0;
-uint8 spFrontalHuman[3][16*16] = {
+	},{
 		{
 				0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,
 				0b0000,0b0000,0b0000,0b0000,0b0000,0b1101,0b1101,0b1101,0b1101,0b1101,0b1101,0b0000,0b0000,0b0000,0b0000,0b0000,
@@ -153,6 +151,7 @@ uint8 spFrontalHuman[3][16*16] = {
 				0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b1101,0b1111,0b1111,0b1101,0b0000,0b0000,0b0000,0b0000,0b0000
 
 		}
+	}
 };
 
 uint8 bombSprite16x16[16*16] ={
@@ -315,12 +314,12 @@ void drawSprite16x16(int posX, int posY,  uint8* sprite){
 
 void drawPlayer16x16(void){
 	int aux = getSprite(contSp);
-	drawSprite16x16(playerPosX, playerPosY, player1[aux]);
+	drawSprite16x16(playerPosX, playerPosY, playerSprites[player1][aux]);
 	contSp = (contSp +1) % 4; //Modulo 4.
 }
 
 void drawPlayerF16x16(int posX, int posY, int aux){
-	drawSprite16x16(posX, posY, player2[aux]);
+	drawSprite16x16(posX, posY, playerSprites[player2][aux]);
 }
 
 void clear16x16(int posX, int posY){

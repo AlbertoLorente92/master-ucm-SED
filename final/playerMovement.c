@@ -14,13 +14,10 @@ int oldPlayerPosY = -1;
 int playerPosX = -1;
 int playerPosY = -1;
 
-extern uint8 player1[3][16*16];
-extern uint8 player2[3][16*16];
-
-extern uint8 spFrontalDemon[3][16*16];
-extern uint8 spFrontalHuman[3][16*16];
-
 extern int contSp;
+
+extern int player1;
+extern int player2;
 
 void initPlayerPosition16x16(int isMine){
 	int pos1X, pos1Y, pos2X, pos2Y;
@@ -55,8 +52,8 @@ void initPlayerPosition16x16(int isMine){
 		foldPlayerPosY = fplayerPosY;
 		foldPlayerPosX = fplayerPosX;
 
-		player1 = spFrontalDemon;
-		player2 = spFrontalHuman;
+		player1 = 0;
+		player2 = 1;
 	}else{
 		playerPosX = pos2X*16;
 		playerPosY = pos2Y*16;
@@ -68,8 +65,8 @@ void initPlayerPosition16x16(int isMine){
 		foldPlayerPosY = fplayerPosY;
 		foldPlayerPosX = fplayerPosX;
 
-		player2 = spFrontalDemon;
-		player1 = spFrontalHuman;
+		player1 = 1;
+		player2 = 0;
 	}
 }
 
