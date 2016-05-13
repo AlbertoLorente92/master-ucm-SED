@@ -51,9 +51,9 @@ void Uart_Init(int baud)
 
     /* UART1 */
     rULCON1=0x3;     // Modo normal, no paridad, 1b stop, 8b char
-    rUCON1=0x5;    // tx=nivel, rx=flanco, no rx-timeout ni rx-error, normal, int/polling
+    rUCON1=0x85;    // tx=nivel, rx=flanco, no rx-timeout ni rx-error, normal, int/polling
     rUBRDIV1=( (int)(MCLK/16./baud + 0.5) -1 ); // formula division de frecuencia
-    rUFCON1=0x0;	// Desactivar FIFO
+    rUFCON1=0x1;	// Desactivar FIFO
     rUMCON1=0x0;	// Desactivar control de flujo
 
     Uart_Config();
@@ -119,7 +119,7 @@ void Uart1Rx_ISR(void){
 	char str[1];
 	char *pt_str = str;
 
-	while((rUFSTAT0 & 0xF) != 0){
+	while((rUFSTAT1 & 0xF) != 0){
 		*pt_str = Uart1_Getch();
 
 		if ((*pt_str & 0x80) != 0){
@@ -152,12 +152,12 @@ void Uart1Rx_ISR(void){
 				}
 
 				if((*pt_str & 0x1F) == 0x01){
-					gameOver();
+					_gameOver();
 					continue;
 				}
 
 				if((*pt_str & 0x1F) == 0x02){
-					gameWin();
+					_gameWin();
 					continue;
 				}
 
