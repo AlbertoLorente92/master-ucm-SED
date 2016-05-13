@@ -84,7 +84,7 @@ void Uart_Config(void)
 /* Por precaucion, se vuelven a borrar los bits de INTPND y EXTINTPND */
 	//RdURXH0();
 	rUFCON0 |= 0x6;
-	RdURXH1();
+	rUFCON0 |= 0x6;
 	rI_ISPC = ~0x0;
 }
 
@@ -105,7 +105,7 @@ void Uart0Rx_ISR(void){
 	while((rUFSTAT0 & 0xF) != 0){
 		*pt_str = Uart0_Getch();
 		DelayMs(100);
-		Uart0_SendByte_FIFO(*pt_str);
+		Uart0_SendByte(*pt_str);
 	}
 
 	// borra el bit pendiente en INTPND
@@ -116,123 +116,102 @@ void Uart0Rx_ISR(void){
 void Uart1Rx_ISR(void){
 	char str[1];
 	char *pt_str = str;
-	*pt_str = Uart1_Getch();
 
-	if ((*pt_str & 0x80) != 0){
-		state = 0;
-	}
+	while((rUFSTAT0 & 0xF) != 0){
+		*pt_str = Uart1_Getch();
 
-	if ((state == 0) && ((*pt_str & 0x80) != 0)){
-		if((*pt_str & 0x60) == 0x00){
-			fpPosX = 0;
-			fpPosX |= (*pt_str & 0x18)<<4;
-			fpPosY = 0;
-			fpPosY |= (*pt_str & 0x04)<<5;
-			fpSprite = (*pt_str & 0x03);
-			state = 1;
-
-			rI_ISPC = 1<<6;
-			return;
+		if ((*pt_str & 0x80) != 0){
+			state = 0;
 		}
 
-		if((*pt_str & 0x60) == 0x20){
-			fbPosX = 0;
-			fbPosX |= (*pt_str & 0x1F);
-			fbPosY = 0;
-			state = 3;
-
-			rI_ISPC = 1<<6;
-			return;
-		}
-
-		if((*pt_str & 0x60) == 0x40){
-			if((*pt_str & 0x1F) == 0x00){
-				state = 5;
-
-				rI_ISPC = 1<<6;
-				return;
+		if ((state == 0) && ((*pt_str & 0x80) != 0)){
+			if((*pt_str & 0x60) == 0x00){
+				fpPosX = 0;
+				fpPosX |= (*pt_str & 0x18)<<4;
+				fpPosY = 0;
+				fpPosY |= (*pt_str & 0x04)<<5;
+				fpSprite = (*pt_str & 0x03);
+				state = 1;
+				continue;
 			}
 
-			if((*pt_str & 0x1F) == 0x01){
-				gameOver();
-				rI_ISPC = 1<<6;
-				return;
+			if((*pt_str & 0x60) == 0x20){
+				fbPosX = 0;
+				fbPosX |= (*pt_str & 0x1F);
+				fbPosY = 0;
+				state = 3;
+				continue;
 			}
 
-			if((*pt_str & 0x1F) == 0x02){
-				gameWin();
-				rI_ISPC = 1<<6;
-				return;
+			if((*pt_str & 0x60) == 0x40){
+				if((*pt_str & 0x1F) == 0x00){
+					state = 5;
+					continue;
+				}
+
+				if((*pt_str & 0x1F) == 0x01){
+					gameOver();
+					continue;
+				}
+
+				if((*pt_str & 0x1F) == 0x02){
+					gameWin();
+					continue;
+				}
+
 			}
 
+			if((*pt_str & 0x60) == 0x60){
+				fbBoomPosX = 0;
+				fbBoomPosX |= (*pt_str & 0x1F);
+				fbBoomPosY = 0;
+				state = 4;
+				continue;
+			}
 		}
 
-		if((*pt_str & 0x60) == 0x60){
-			fbBoomPosX = 0;
-			fbBoomPosX |= (*pt_str & 0x1F);
-			fbBoomPosY = 0;
-			state = 4;
-
-			rI_ISPC = 1<<6;
-			return;
+		if (state == 1){
+			fpPosX |= *pt_str;
+			state = 2;
+			continue;
 		}
-		// TODO other commands
-	}
 
-	if (state == 1){
-		fpPosX |= *pt_str;
-		state = 2;
+		if (state == 2){
+			fpPosY |= *pt_str;
+			state = 0;
 
-		rI_ISPC = 1<<6;
-		return;
-	}
+			foldPlayerPosX = fplayerPosX;
+			foldPlayerPosY = fplayerPosY;
+			fplayerPosX = fpPosX;
+			fplayerPosY = fpPosY;
+			continue;
+		}
 
-	if (state == 2){
-		fpPosY |= *pt_str;
-		state = 0;
+		if (state == 3){
+			fbPosY |= *pt_str;
+			state = 0;
 
-		foldPlayerPosX = fplayerPosX;
-		foldPlayerPosY = fplayerPosY;
-		fplayerPosX = fpPosX;
-		fplayerPosY = fpPosY;
+			fbombPosX = fbPosX<<4;
+			fbombPosY = fbPosY<<4; //Multiplicar por 16.
+			continue;
+		}
 
-		// TODO decidir si dejar esto o no.
-		//redrawChanging();
+		if (state == 4){
+			fbBoomPosY |= *pt_str;
+			state = 0;
 
-		rI_ISPC = 1<<6;
-		return;
-	}
+			boomBomb(1);
 
-	if (state == 3){
-		fbPosY |= *pt_str;
-		state = 0;
+			fbombPosX = -1;
+			fbombPosY = -1;
+			continue;
+		}
 
-		fbombPosX = fbPosX<<4;
-		fbombPosY = fbPosY<<4; //Multiplicar por 16.
-
-		rI_ISPC = 1<<6;
-		return;
-	}
-
-	if (state == 4){
-		fbBoomPosY |= *pt_str;
-		state = 0;
-
-		boomBomb(1);
-
-		fbombPosX = -1;
-		fbombPosY = -1;
-
-		rI_ISPC = 1<<6;
-		return;
-	}
-
-	if(state == 5){
-		friendSeed = *pt_str;
-		state = 0;
-
-		rI_ISPC = 1<<6;
-		return;
+		if(state == 5){
+			friendSeed = *pt_str;
+			state = 0;
+			continue;
+		}
 	}
 
 	// borra el bit pendiente en INTPND
@@ -253,29 +232,21 @@ char Uart1_Getch(void){
     while (!(rUTRSTAT1 & 0x1));        // esperar a que el buffer contenga datos
 	return RdURXH1();}		   		   // devolver el caracter
 
-void Uart0_SendByte_FIFO(int data){
-    char localBuf[2] = {'\0','\0'};
-    if(data == '\n'){
-	   while ((rUFSTAT0 & 0xF0) == 15);		// esperar a que THR se vacie
-	   WrUTXH0('\r');}						// escribir retorno de carro (utilizar macro)
-    while ((rUFSTAT0 & 0xF0) == 15);		// esperar a que THR se vacie
-	WrUTXH0(data);}
-
 void Uart0_SendByte(int data){
     char localBuf[2] = {'\0','\0'};
     if(data == '\n'){
-	   while (!(rUTRSTAT0 & 0x2));     // esperar a que THR se vacie
-	   WrUTXH0('\r');}			       // escribir retorno de carro (utilizar macro)
-	while (!(rUTRSTAT0 & 0x2)); 	   // esperar a que THR se vacie
-	WrUTXH0(data);}				       // escribir data (utilizar macro)
+	   while ((rUFSTAT0 & 0xF0) == 15);		// esperar a que la FIFO no este llena
+	   WrUTXH0('\r');}						// escribir retorno de carro (utilizar macro)
+    while ((rUFSTAT0 & 0xF0) == 15);		// esperar a que la FIFO no este llena
+	WrUTXH0(data);}			       // escribir data (utilizar macro)
 
 void Uart1_SendByte(int data){
     char localBuf[2] = {'\0','\0'};
     if(data == '\n'){
-	   while (!(rUTRSTAT1 & 0x2));     // esperar a que THR se vacie
-	   WrUTXH1('\r');}			       // escribir retorno de carro (utilizar macro)
-	while (!(rUTRSTAT1 & 0x2)); 	   // esperar a que THR se vacie
-	WrUTXH1(data);}				       // escribir data (utilizar macro)
+	   while ((rUFSTAT1 & 0xF0) == 15);		// esperar a que la FIFO no este llena
+	   WrUTXH1('\r');}						// escribir retorno de carro (utilizar macro)
+    while ((rUFSTAT1 & 0xF0) == 15);		// esperar a que la FIFO no este llena
+	WrUTXH1(data);}
 
 void Uart0_SendString(char *pt){
     while (*pt)						    // mandar byte a byte hasta completar string
