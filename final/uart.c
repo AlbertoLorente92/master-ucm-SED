@@ -41,11 +41,11 @@ extern int fbombPosY;
 void Uart_Init(int baud)
 {
     /* UART0 */
-    rULCON0=0x3;     // Modo normal, no paridad, 1b stop, 8b char
-    rUCON0=0x5;    // tx=nivel, rx=flanco, no rx-timeout ni rx-error, normal, int/polling
+    rULCON0=0x3;	// Modo normal, no paridad, 1b stop, 8b char
+    rUCON0=0x85;	// tx=Pulse, rx=Pulse, rx-timeout ON, rx-error OFF, normal, int/polling
     rUBRDIV0=( (int)(MCLK/16./baud + 0.5) -1 ); // formula division de frecuencia
-    rUFCON0=0x0;     // Desactivar FIFO
-    rUMCON0=0x0;	 // Desactivar control de flujo
+    rUFCON0=0x1;	// Activar FIFO, Rx FIFO Trigger Level = 4-bytes
+    rUMCON0=0x0;	// Desactivar control de flujo
 
     /* UART1 */
     rULCON1=0x3;     // Modo normal, no paridad, 1b stop, 8b char
@@ -82,7 +82,8 @@ void Uart_Config(void)
 	rEXTINT &= ~(1<<30 | 1<<26);
 	rEXTINT |= 1<<29 | 1<<25;
 /* Por precaucion, se vuelven a borrar los bits de INTPND y EXTINTPND */
-	RdURXH0();
+	//RdURXH0();
+	rUFCON0 |= 0x6;
 	RdURXH1();
 	rI_ISPC = ~0x0;
 }
@@ -97,110 +98,19 @@ void Uart_Config(void)
 // 5 Semilla.
 
 void Uart0Rx_ISR(void){
-	/*
+
 	char str[1];
 	char *pt_str = str;
-	*pt_str = Uart0_Getch();
 
-	if ((*pt_str & 0x80) != 0){
-		state = 0;
-	}
-
-	if ((state == 0) && ((*pt_str & 0x80) != 0)){
-		if((*pt_str & 0x60) == 0x00){
-			fpPosX = 0;
-			fpPosX |= (*pt_str & 0x18)<<4;
-			fpPosY = 0;
-			fpPosY |= (*pt_str & 0x04)<<5;
-			fpSprite = (*pt_str & 0x03);
-			state = 1;
-
-			rI_ISPC = 1<<7;
-			return;
-		}
-
-		if((*pt_str & 0x60) == 0x20){
-			fbPosX = 0;
-			fbPosX |= (*pt_str & 0x1F);
-			fbPosY = 0;
-			state = 3;
-
-			rI_ISPC = 1<<7;
-			return;
-		}
-
-		if((*pt_str & 0x60) == 0x40){
-			friendSeed = 0;
-			friendSeed |= (*pt_str & 0x1F);
-
-			rI_ISPC = 1<<7;
-			return;
-		}
-
-		if((*pt_str & 0x60) == 0x60){
-			fbBoomPosX = 0;
-			fbBoomPosX |= (*pt_str & 0x1F);
-			fbBoomPosY = 0;
-			state = 4;
-
-			rI_ISPC = 1<<7;
-			return;
-		}
-		// TODO other commands
-	}
-
-	if (state == 1){
-		fpPosX |= *pt_str;
-		state = 2;
-
-		rI_ISPC = 1<<7;
-		return;
-	}
-
-	if (state == 2){
-		fpPosY |= *pt_str;
-		state = 0;
-
-		fplayerPosX = fpPosX;
-		fplayerPosY = fpPosY;
-
-		// TODO decidir si dejar esto o no.
-		//redrawChanging();
-
-		rI_ISPC = 1<<7;
-		return;
-	}
-
-	if (state == 3){
-		fbPosY |= *pt_str;
-		state = 0;
-
-		fbombPosX = fbPosX<<4;
-		fbombPosY = fbPosY<<4; //Multiplicar por 16.
-
-		rI_ISPC = 1<<7;
-		return;
-	}
-
-	if (state == 4){
-		fbBoomPosY |= *pt_str;
-		state = 0;
-
-		fbombPosX = fbBoomPosX*16;
-		fbombPosY = fbBoomPosY*16;
-
-		boomBomb(1);
-
-		fbombPosX = -1;
-		fbombPosY = -1;
-
-		rI_ISPC = 1<<7;
-		return;
+	while((rUFSTAT0 & 0xF) != 0){
+		*pt_str = Uart0_Getch();
+		DelayMs(100);
+		Uart0_SendByte_FIFO(*pt_str);
 	}
 
 	// borra el bit pendiente en INTPND
 	rI_ISPC = 1<<7;
-	*/
+
 }
 
 void Uart1Rx_ISR(void){
@@ -342,6 +252,14 @@ char Uart0_Getch(void){
 char Uart1_Getch(void){
     while (!(rUTRSTAT1 & 0x1));        // esperar a que el buffer contenga datos
 	return RdURXH1();}		   		   // devolver el caracter
+
+void Uart0_SendByte_FIFO(int data){
+    char localBuf[2] = {'\0','\0'};
+    if(data == '\n'){
+	   while ((rUFSTAT0 & 0xF0) == 15);		// esperar a que THR se vacie
+	   WrUTXH0('\r');}						// escribir retorno de carro (utilizar macro)
+    while ((rUFSTAT0 & 0xF0) == 15);		// esperar a que THR se vacie
+	WrUTXH0(data);}
 
 void Uart0_SendByte(int data){
     char localBuf[2] = {'\0','\0'};
