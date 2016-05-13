@@ -316,8 +316,8 @@ void lcd_putpixel( uint16 x, uint16 y, uint8 color){
 	uint8 byte, bit;
 	uint16 i;
 
-	i = x/2 + y*(320/2);
-	bit = (1-x%2)*4;
+	i = (x >> 1) + y*(320/2);
+	bit = (1 - (x & 0x1))<<2;
 	byte = buffer[i];
 	byte &= ~(0xF << bit);
 	byte |= color << bit;
