@@ -130,7 +130,6 @@ void movePlayerUp(void){
 	if(isValidPosition(playerPosX, playerPosY -1)){
 		playerPosY -= 1;
 		enviarPosPlayer(playerPosX, playerPosY, contSp);
-		checkWinGame();
 	}
 }
 
@@ -138,7 +137,6 @@ void movePlayerDown(void){
 	if(isValidPosition(playerPosX, playerPosY +1)){
 		playerPosY += 1;
 		enviarPosPlayer(playerPosX, playerPosY, contSp);
-		checkWinGame();
 	}
 }
 
@@ -146,7 +144,6 @@ void movePlayerLeft(void){
 	if(isValidPosition(playerPosX -1, playerPosY)){
 		playerPosX -= 1;
 		enviarPosPlayer(playerPosX, playerPosY, contSp);
-		checkWinGame();
 	}
 }
 
@@ -154,6 +151,5 @@ void movePlayerRight(void){
 	if(isValidPosition(playerPosX +1, playerPosY)){
 		playerPosX += 1;
 		enviarPosPlayer(playerPosX, playerPosY, contSp);
-		checkWinGame();
 	}
 }

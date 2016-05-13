@@ -7,6 +7,7 @@
 #include "uart.h"
 
 void initPlayerPosition16x16(int isMine);
+int isValidPos(int x, int y);
 void checkWinGame(void);
 void movePlayerUp(void);
 void movePlayerDown(void);

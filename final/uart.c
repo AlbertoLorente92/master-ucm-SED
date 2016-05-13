@@ -12,6 +12,8 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+void DelayMs(int time);
+
 void Uart0Rx_ISR(void) __attribute__ ((interrupt ("IRQ")));
 void Uart1Rx_ISR(void) __attribute__ ((interrupt ("IRQ")));
 
@@ -233,7 +235,6 @@ char Uart1_Getch(void){
 	return RdURXH1();}		   		   // devolver el caracter
 
 void Uart0_SendByte(int data){
-    char localBuf[2] = {'\0','\0'};
     if(data == '\n'){
 	   while ((rUFSTAT0 & 0xF0) == 15);		// esperar a que la FIFO no este llena
 	   WrUTXH0('\r');}						// escribir retorno de carro (utilizar macro)
@@ -241,7 +242,6 @@ void Uart0_SendByte(int data){
 	WrUTXH0(data);}			       // escribir data (utilizar macro)
 
 void Uart1_SendByte(int data){
-    char localBuf[2] = {'\0','\0'};
     if(data == '\n'){
 	   while ((rUFSTAT1 & 0xF0) == 15);		// esperar a que la FIFO no este llena
 	   WrUTXH1('\r');}						// escribir retorno de carro (utilizar macro)

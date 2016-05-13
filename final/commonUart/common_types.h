@@ -27,9 +27,4 @@ typedef unsigned short int     uint16;  /*                          0 ... 65.535
 typedef unsigned int           uint32;  /*                          0 ... 4.294.967.295               */
 typedef unsigned long long int uint64;  /*                          0 ... +18.446.744.073.709.551.614 */
 
-
-//#define NULL	((void *) 0)
-#define TRUE	(1)
-#define FALSE	(0)
-
 #endif 

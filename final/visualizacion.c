@@ -152,7 +152,7 @@ uint8 spFrontalHuman[3][16*16] = {
 		}
 };
 
-int bombSprite16x16[16*16] ={
+uint8 bombSprite16x16[16*16] ={
 		0b0000,0b0000,0b0010,0b0100,0b1111,0b1111,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,
 		0b0000,0b0010,0b0001,0b0010,0b0000,0b0000,0b1111,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,
 		0b0000,0b0000,0b0010,0b0000,0b0000,0b0000,0b0000,0b1111,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,
@@ -171,7 +171,7 @@ int bombSprite16x16[16*16] ={
 		0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b1111,0b1111,0b1111,0b1111,0b1111,0b0000,0b0000,0b0000,0b0000,0b0000
 };
 
-int exitSprite16x16[16*16] ={
+uint8 exitSprite16x16[16*16] ={
 		0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,
 		0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,
 		0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,
@@ -190,7 +190,7 @@ int exitSprite16x16[16*16] ={
 		0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000
 };
 
-int dirtSprite16x16[16*16] ={
+uint8 dirtSprite16x16[16*16] ={
 		0b0100,0b0110,0b0110,0b0100,0b0110,0b0100,0b0110,0b1111,0b0110,0b0100,0b0100,0b0110,0b0110,0b0110,0b1111,0b0110,
 		0b0100,0b0100,0b1111,0b0110,0b0110,0b1111,0b1111,0b0110,0b0110,0b0110,0b0110,0b0110,0b0010,0b0010,0b0110,0b0100,
 		0b0100,0b0100,0b0110,0b0010,0b0010,0b0110,0b0010,0b0100,0b1111,0b0010,0b0010,0b0110,0b0100,0b0100,0b1011,0b0110,
@@ -209,7 +209,7 @@ int dirtSprite16x16[16*16] ={
 		0b0100,0b0110,0b0010,0b0100,0b0100,0b0110,0b1011,0b0100,0b0100,0b0100,0b0110,0b0110,0b0100,0b0100,0b0110,0b1111
 };
 
-int wallSprite16x16[16*16] ={
+uint8 wallSprite16x16[16*16] ={
 		0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,
 		0b0000,0b0000,0b0000,0b0100,0b0100,0b0100,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,0b0000,
 		0b0000,0b0000,0b0100,0b0100,0b0100,0b0100,0b0000,0b0000,0b1001,0b0100,0b0100,0b0100,0b0100,0b0100,0b0000,0b0000,
@@ -265,6 +265,7 @@ void init_welcomeBoom(void){
 	lcd_puts_x2( 0, 20, BLACK, "     BOMBERMAN     " );
 	lcd_puts( 0, 60, BLACK, "   Pulsa Boton Izquierdo para empezar   " );
 }
+
 void drawMap16x16(void){
 	int i, j;
 	for (i = 0; i<320/16; i++)
@@ -280,81 +281,43 @@ void drawWall16x16(int x, int y){
 	x *=16;
 	y *=16;
 
-	int i, j;
-	for (i = 0; i<16; i++){
-		for (j = 0; j<16; j++){
-			lcd_putpixel(x+i, y+j, wallSprite16x16[(j*16)+i]);
-		}
-	}
+	drawSprite16x16(x, y, wallSprite16x16);
 }
 
 void drawDirt16x16(int x, int y){
 	x *=16;
 	y *=16;
 
-	int i, j;
-	for (i = 0; i<16; i++){
-		for (j = 0; j<16; j++){
-			lcd_putpixel(x+i, y+j, dirtSprite16x16[(j*16)+i]);
-		}
-	}
+	drawSprite16x16(x, y, dirtSprite16x16);
 }
 
 void drawExit16x16(int x,int y){
-	int i, j;
-	for (i = 0; i<16; i++){
-		for (j = 0; j<16; j++){
-			lcd_putpixel(x+i, y+j, exitSprite16x16[(j*16)+i]);
-		}
-	}
+	drawSprite16x16(x, y, exitSprite16x16);
 }
 
-void generateDirt16x16(void){
-	int aux = 0;
-	int i, j;
-	while(aux < NUMBER_OF_DIRT){
-		i = rand() % (320/16);
-		j = rand() % (240/16);
-		if(map16x16[j*(320/16) + i] == NoNe){
-			map16x16[j*(320/16) + i] = Dirt;
-			aux++;}
-	}
-}
-
-// TODO Que acepte parametros, como drawBimb16x16
-void drawPlayer16x16(void){
-	/*
+void drawSprite16x16(int posX, int posY,  uint8* sprite){
 	int i,j;
-	for (i = 0; i<16; i++){
-		for (j = 0; j<16; j++){
-			int aux = getSprite(contSp);
-			if(spFrontal[aux][(j*16)+i] != 0b0000){
-				lcd_putpixel(playerPosX+i, playerPosY+j, spFrontal[aux][(j*16)+i] );
+	int count = 0;
+	int currY;
+	for (j = 0; j<16; j++){
+		currY = posY + j;
+		for (i = 0; i<16; i++){
+			if(sprite[count] != 0b0000){
+				lcd_putpixel(posX+i, currY, sprite[count] );
 			}
+			count +=1;
 		}
-	}*/
+	}
+}
+
+void drawPlayer16x16(void){
 	int aux = getSprite(contSp);
-	lcd_drawSprite16x16(playerPosX, playerPosY, spFrontalDemon[aux]);
-	contSp = (contSp +1)%4;
+	drawSprite16x16(playerPosX, playerPosY, spFrontalDemon[aux]);
+	contSp = (contSp +1) % 4; //Modulo 4.
 }
 
 void drawPlayerF16x16(int posX, int posY, int aux){
-	int i,j;
-	for (i = 0; i<16; i++){
-		for (j = 0; j<16; j++){
-			if(spFrontalDemon[aux][(j*16)+i] != 0b0000){
-				lcd_putpixel(posX+i, posY+j, spFrontalDemon[aux][(j*16)+i] );
-			}
-		}
-	}
-}
-
-// TODO eliminar este y utilizar clear16x16.
-void clearPlayer16x16(void){ // Que acepte parametros
-	int i;
-	for (i = 0; i<16; i++){
-		lcd_putpixel(playerPosX+i, playerPosY+i, WHITE);
-	}
+	drawSprite16x16(posX, posY, spFrontalDemon[aux]);
 }
 
 void clear16x16(int posX, int posY){
@@ -362,14 +325,7 @@ void clear16x16(int posX, int posY){
 }
 
 void drawBomb16x16(int posX, int posY){
-	int i, j;
-	for (i = 0; i<16; i++){
-		for (j = 0; j<16; j++)	{
-			if(bombSprite16x16[(j*16)+i] != 0b0000){
-				lcd_putpixel(posX+i, posY+j, bombSprite16x16[(j*16)+i]);
-			}
-		}
-	}
+	drawSprite16x16(posX, posY, bombSprite16x16);
 }
 
 void redrawChanging(){

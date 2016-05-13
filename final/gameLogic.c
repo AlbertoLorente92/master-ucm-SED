@@ -25,6 +25,18 @@ void initExitPosition16x16(void){
 	exitPosY=5;
 }
 
+void generateDirt16x16(void){
+	int aux = 0;
+	int i, j;
+	while(aux < NUMBER_OF_DIRT){
+		i = rand() % (320/16);
+		j = rand() % (240/16);
+		if(map16x16[j*(320/16) + i] == NoNe){
+			map16x16[j*(320/16) + i] = Dirt;
+			aux++;}
+	}
+}
+
 void _gameOver(void){
 	// deshabilitar timer
 	rINTMSK |= (1<<13 | 1<<12 | 1<<11);

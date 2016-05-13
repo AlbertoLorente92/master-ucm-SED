@@ -13,6 +13,9 @@ void Eint4567_ISR(void) __attribute__ ((interrupt ("IRQ")));
 void Eint4567_init();
 void DelayMs(int time);
 
+extern void ledsSetBlink(int aux);
+
+
 void Eint4567_init()
 {
 /* Configuracion del controlador de interrupciones */
@@ -51,7 +54,7 @@ void Eint4567_ISR(void)
 		rEXTINTPND = 1<<2 | 1<<3;
 		rI_ISPC = 1<<21;
 	}else{
-		ledsSetBlink();
+		ledsSetBlink(0);
 		which_int = rEXTINTPND & (1<<2 | 1<<3);
 		setBomb(playerPosX, playerPosY);
 		DelayMs(100);
